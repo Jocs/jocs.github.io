@@ -1,0 +1,15 @@
+{
+  "name": "jocs.github.io",
+  "version": "0.0.1",
+  "description": "Jocs's blog",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "React",
+    "Redux"
+  ],
+  "author": "Jocs",
+  "license": "ISC"
+}
