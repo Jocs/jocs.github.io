@@ -1,6 +1,6 @@
 # JavaScript Errors 指南
 
-在README文件中包含了这么多年我对JavaScript errors的学习和理解，包括把错误报告给服务器、在众多bug中根据错误信息追溯产生错误的原因，这些都是的处理JavaScript 错误变得困难。浏览器厂商在处理JavaScript错误方面也有所改进，但是保证应用程序能够稳健地处理JavaScript错误仍然有提升的空间。
+在README文件中包含了这么多年我对JavaScript errors的学习和理解，包括把错误报告给服务器、在众多bug中根据错误信息追溯产生错误的原因，这些都使得处理JavaScript 错误变得困难。浏览器厂商在处理JavaScript错误方面也有所改进，但是保证应用程序能够稳健地处理JavaScript错误仍然有提升的空间。
 
 关于本手册测测试用例可以从下面这个网站找到：https://mknichel.github.io/javascript-errors/
 
@@ -522,7 +522,7 @@ Chrome和Firefox支持ShareWorker API，这样worker就可以在多个页面共�
 
 **![](https://mknichel.github.io/javascript-errors/ic_warning_black_18px.svg) shared workers的错误处理在浏览期间差异性很大**
 
-#### Service Workers 
+#### Service Workers
 
 [Service Workers](http://www.w3.org/TR/service-workers/)是新规范中提出的，现目前仅在Chrome和Firefox最近版本中实现，该worker和dedicated web worker的错误处理机制差不多。
 
