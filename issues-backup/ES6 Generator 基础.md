@@ -336,14 +336,20 @@ As noted above, you can see that the `for..of` loop ignores and throws away the 
 
 OK, so that's it for the basics of generators. Don't worry if it's a little mind-bending（令人费解的） still. All of us have felt that way at first!
 
-
+OK,上面是关于generator函数的基本用法，如果你依然对generator函数感到费解，不要担心，我们所有人在一开始感觉都是那样的。
 
 It's natural to wonder what this new exotic（异国的、外来的） toy is going to do practically for your code. There's a **lot** more to them, though. We've just scratched（挖出、掌握？） the surface. So we have to dive deeper before we can discover just how powerful they can/will be.
 
+我们很自然的想到这一外来的语法对我们实际代码有什么作用呢？generator函数有很多作用，我们只是挖掘了其非常表面的一部分。在我们发现generator函数如此强大之前我们应该更加深入的了解它。
+
 After you've played around with the above code snippets (try Chrome nightly/canary or FF nightly, or node 0.11+ with the `--harmony` flag), the following questions may arise:
 
-1. How does error handling work?
-2. Can one generator call another generator?
-3. How does async coding work with generators?
+在你练习上面代码片段之后（在Chrome或者FF每夜版本，或者0.11+带有`--harmony`的node环境下），下面的问题也许会浮出水面：
+
+1. How does error handling work?怎样处理generator内部错误？
+2. Can one generator call another generator?在generator函数内部怎么调用其他generator函数？
+3. How does async coding work with generators?异步代码怎么和generator函数协同工作？
 
 Those questions, and more, will be covered in subsequent（随后的） articles here, so stay tuned（敬请期待）!
+
+这些问题，或者其他的问题都将在随后的文章中覆盖，敬请期待。
