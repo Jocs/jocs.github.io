@@ -12,7 +12,11 @@ One of the most exciting new features coming in JavaScript ES6 is a new breed of
 
 The first thing to observe as we talk about generators is how they differ from normal functions with respect to the "run to completion" expectation.
 
+但我们谈论Generator函数时，我们首先应该注意到的是，从“运行到完成”其和普通的函数表现有什么不同之处。
+
 Whether you realized it or not, you've always been able to assume something fairly fundamental about your functions: once the function starts running, it will always run to completion before any other JS code can run.
+
+不论你是否已经意识到，你已经潜意识得认为函数具有一些非常基础的特性：函数一旦开始执行，那么在其结束之前，不会执行其他JavaScript代码。
 
 例如:
 
@@ -35,7 +39,11 @@ foo();
 
 Here, the `for` loop will take a fairly long time to complete, well more than one millisecond, but our timer callback with the `console.log(..)` statement cannot interrupt the `foo()` function while it's running, so it gets stuck at the back of the line (on the event-loop) and it patiently waits its turn.
 
+上面的代码中，`for`循环会执行相当长的时间，长于1秒钟，但是在`foo()`函数执行的过程中，我们带有`console.log(...)`的定时器并不能够中断`foo()`函数的运行。因此代码被阻塞，定时器被推入事件循环的最后，耐心等待`foo`函数执行完成。
+
 What if `foo()` could be interrupted, though? Wouldn't that cause havoc in our programs?
+
+倘若`foo()`可以被中断执行？
 
 That's exactly the ~~nightmares~~ challenges of multi-threaded programming, but we are quite fortunate in JavaScript land to not have to worry about such things, because JS is always single-threaded (only one command/function executing at any given time).
 
