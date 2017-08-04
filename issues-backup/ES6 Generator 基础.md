@@ -43,31 +43,51 @@ Here, the `for` loop will take a fairly long time to complete, well more than on
 
 What if `foo()` could be interrupted, though? Wouldn't that cause havoc in our programs?
 
-倘若`foo()`可以被中断执行？
+倘若`foo()`可以被中断执行？它不会给我们的带来前所未有的浩劫吗？
 
 That's exactly the ~~nightmares~~ challenges of multi-threaded programming, but we are quite fortunate in JavaScript land to not have to worry about such things, because JS is always single-threaded (only one command/function executing at any given time).
 
+函数可以被中断对于多线程编程来说确实是一个挑战，但是我们应该庆幸的是，在JavaScript的世界中我们没必要为此而担心，因为JS总是单线程的（在任何时间只有一天命令/函数被执行）。
+
 **Note:** Web Workers are a mechanism where you can spin up a whole separate thread for a part of a JS program to run in, totally in parallel to your main JS program thread. The reason this doesn't introduce multi-threaded complications into our programs is that the two threads can only communicate with each other through normal async events, which always abide by（遵守） the event-loop *one-at-a-time* behavior required by run-to-completion.
 
-## Run..Stop..Run
+**注意：** Web Workers是JavaScript中实现与JS主线程分离的独立线程机制，总的说来，Web Workers是与JS主线程平行的另外一个线程。在这儿我们并不介绍多线程并发的一个原因是，主线程和Web Workers线程只能够通过异步事件进行通信，因此每个线程内部从运行到结束依然遵循一个接一个的事件循环机制。
+
+#### 运行-停止-运行
 
 With ES6 generators, we have a different kind of function, which may be *paused* in the middle, one or many times, and resumed（继续执行） *later*, allowing other code to run during these paused periods.
 
+由于ES6的Generators，我们拥有了另外一种类型的函数，这种函数可以在执行的过程中暂停一次或多次，在将来的某个时间继续执行，并且允许在Generator暂停的过程中运行其他代码。
+
 If you've ever read anything about concurrency or threaded programming, you may have seen the term "cooperative（协程）", which basically indicates that a process (in our case, a function) itself chooses when it will allow an interruption, so that it can **cooperate** with other code. This concept is contrasted with "preemptive", which suggests that a process/function could be interrupted against its will.
+
+如果你曾经阅读过关于并发或者多线程编程的资料，那你一定熟悉“协程”这一概念，“协程”的意思就是一个进程（就是一个函数）其可以自行选择终止运行，以便可以和其他代码“协作”完成一些功能。这一概念和“preemptive”相对，preemptive认为可以在进程/函数外部对其终止运行。
 
 ES6 generator functions are "cooperative" in their concurrency behavior. Inside the generator function body, you use the new `yield` keyword to pause the function from inside itself. Nothing can pause a generator from the outside; it pauses itself when it comes across a `yield`.
 
+根据ES6 Generator函数的并发行为，我们可以认为其是一种“协程”。在Generator函数体内部，你可以使用`yield`关键字在函数内部暂停函数的执行，在Generator函数外部是无法暂停一个Generator函数执行的；每当Generator函数遇到一个`yield`关键字就将暂停执行。
+
 However, once a generator has `yield`-paused itself, it cannot resume on its own. An external control must be used to restart the generator. We'll explain how that happens in just a moment.
+
+然后，一旦一个Generator函数通过`yield`暂停执行，其不能够自行恢复执行，需要通过外部的控制来重新启动generator函数，我们将在文章后面部分介绍这是怎么发生的。
 
 So, basically, a generator function can stop and be restarted, as many times as you choose. In fact, you can specify a generator function with an infinite loop (like the infamous `while (true) { .. }`) that essentially never finishes. While that's usually madness or a mistake in a normal JS program, with generator functions it's perfectly sane（理智的、明智的） and sometimes exactly what you want to do!
 
+基本上，只要你愿意，一个Generator函数可以暂停执行/重新启动任意多次。实际上，你可以再Generator函数内部使用无限循环（比如非著名的`while (true) { .. }`）来是的函数可以无尽的暂停/重新启动。然后这在普通的JS程序中却是疯狂的行径，甚至会抛出错误。但是Generator函数却能够表现的非常明智，有些时候你确实想利用Generator函数这种无尽机制。
+
 Even more importantly, this stopping and starting is not *just* a control on the execution of the generator function, but it also enables 2-way message passing into and out of the generator, as it progresses. With normal functions, you get parameters at the beginning and a `return` value at the end. With generator functions, you send messages out with each `yield`, and you send messages back in with each restart.
 
-## Syntax Please!
+更为重要的是，暂停/重新启动不仅仅用于控制Generator函数执行，它也可以在generator函数内部和外部进行双向的通信。在普通的JavaScript函数中，你可以通过传参的形式将数据传入函数内容，在函数内部通过`return`语句将函数的返回值传递到函数外部。在generator函数中，我们通过`yield`表达式将信息传递到外部，然后通过每次重启generator函数将其他信息传递给generator。
+
+#### Generator 函数的语法
 
 Let's dig into the syntax of these new and exciting generator functions.
 
+然我们看看新奇并且令人兴奋的generator函数的语法是怎样书写的。
+
 First, the new declaration syntax:
+
+首先，新的函数声明语法：
 
 ```javascript
 function *foo() {
@@ -77,13 +97,21 @@ function *foo() {
 
 Notice the `*` there? That's new and a bit strange looking. To those from some other languages, it may look an awful lot（经常） like a function return-value pointer. But don't get confused! This is just a way to signal the special generator function type.
 
+发现`*`符号没？显得有些陌生且有些奇怪。对于从其他语言转向JavaScript的人来说，it may look an awful lot（经常） like a function return-value pointer。但是不要被迷惑到了，`*`只是用于标识generator函数而已。
+
 You've probably seen other articles/documentation which use `function* foo(){ }`instead of `function *foo(){ }` (difference in placement of the `*`). Both are valid, but I've recently decided that I think `function *foo() { }` is more accurate, so that's what I'm using here.
+
+你可能会在其他的文章/文档中看到如下形式书写generator函数`function* foo(){}`，而不是这样`function *foo() {}`(`*`号的位置有所不同)。其实两种形式都是合法的，但是最近我认为后面一种形式更为准确，因此在本篇文章中都是使用后面一种形式。
 
 Now, let's talk about the contents of our generator functions. Generator functions are just normal JS functions in most respects. There's very little new syntax to learn *inside* the generator function.
 
+现在，让我们来讨论下generator函数的内部构成吧。在很多方面，generator函数和普通函数无异，只有在generator函数内部有一些新的语法。
+
 The main new toy we have to play with, as mentioned above, is the `yield` keyword. `yield ___` is called a "yield expression" (and not a statement) because when we restart the generator, we will send a value back in, and whatever we send in will be the computed result of that `yield ___` expression.
 
-Example:
+
+
+例如:
 
 ```javascript
 function *foo() {
