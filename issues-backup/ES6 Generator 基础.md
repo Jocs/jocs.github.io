@@ -109,7 +109,7 @@ Now, let's talk about the contents of our generator functions. Generator functio
 
 The main new toy we have to play with, as mentioned above, is the `yield` keyword. `yield ___` is called a "yield expression" (and not a statement) because when we restart the generator, we will send a value back in, and whatever we send in will be the computed result of that `yield ___` expression.
 
-
+正如上面已经提及，我们最先需要了解的就是`yield`关键字，`yield__`被视为“yield表达式”（并不是一条语句），因为当我们重新启动generator函数的时候，我们可以传递信息到generator函数内部，不论我们传递什么进去，都将被视为`yield__`表达式的运行结果。
 
 例如:
 
@@ -122,9 +122,15 @@ function *foo() {
 
 The `yield "foo"` expression will send the `"foo"` string value out when pausing the generator function at that point, and whenever (if ever) the generator is restarted, whatever value is sent in will be the result of that expression, which will then get added to `1` and assigned to the `x` variable.
 
+`yield "foo"`表达式会在generator函数暂停时把“foo”字符串传递到外部。同时，当generator函数恢复执行的时候，其他的值又会通过其他表达式传入到函数里面作为`yield`表达式的返回值加`1`最后再将结果赋值给`x`变量。
+
 See the 2-way communication? You send the value `"foo"` out, pause yourself, and at some point *later* (could be immediately, could be a long time from now!), the generator will be restarted and will give you a value back. It's almost as if the `yield`keyword is sort of making a request for a value.
 
+看到generator函数的双向通信了吗？generator函数将‘’foo‘’字符串传递到外部，暂停函数执行，在将来的某个时间点（可能是立即也可能是很长一段时间后），generator会被重启，并且会传递一个值给generator函数，就好像`yield`关键字就是某种发送请求获取值的请求形式。
+
 In any expression location, you *can* just use `yield` by itself in the expression/statement, and there's an assumed `undefined` value `yield`ed out. So:
+
+在任意表达式中，你可以仅使用`yield`关键字，后面不跟任何表达式或值。在这种情况下，就相当于将`undefined`通过`yield`传递出去。如下代码：
 
 ```javascript
 // note: `foo(..)` here is NOT a generator!!
@@ -142,9 +148,15 @@ function *bar() {
 
 "Generator Iterator". Quite a mouthful（晦涩难懂）, huh?
 
+“Generator 迭代器”，时不时相当晦涩难懂？
+
 Iterators are a special kind of behavior, a design pattern actually, where we step through an ordered set of values one at a time by calling `next()`. Imagine for example using an iterator on an array that has five values in it: `[1,2,3,4,5]`. The first `next()`call would return `1`, the second `next()` call would return `2`, and so on. After all values had been returned, `next()` would return `null` or `false` or otherwise signal to you that you've iterated over all the values in the data container.
 
+迭代器是一种特殊的行为，准确说是一种设计模式，当我们通过调用`next()`方法去遍历一组值的集合时，例如，我们通过在长度为5的数组`[1, 2, 3, 4, 5]`上面实现了迭代器。当我们第一次调用`next()`的时候，会返回`1`。第二次调用`next()`返回`2`,如此下去，当所有的值都返回后，再次调用`next()`将返回`null`或者`false`或其他值，这意味着你已经遍历完真个数组中的值了。
+
 The way we control generator functions from the outside is to construct and interact with a *generator iterator*. That sounds a lot more complicated than it really is. Consider this silly(愚蠢的) example:
+
+我们是通过和generator迭代器进行交互来在generator函数外部控制generator函数，这听起来比起实际上有些复杂，考虑下面这个愚蠢的例子：
 
 ```javascript
 function *foo() {
@@ -158,15 +170,23 @@ function *foo() {
 
 To step through the values of that `*foo()` generator function, we need an iterator to be constructed. How do we do that? Easy!
 
+为了遍历`*foo()`generator函数中的所有值，我们首先需要构建一个迭代器，我们怎么去构建这个迭代器呢？非常简单！
+
 ```javascript
 var it = foo();
 ```
 
 Oh! So, calling the generator function in the normal way doesn't actually execute any of its contents.
 
+如此之简单，我们仅仅想执行普通函数一样执行generator函数，其将返回一个迭代器，但是generator函数中的代码并不会被运行。
+
 That's a little strange to wrap your head around（增加理解难度）. You also may be tempted to wonder, why isn't it `var it = new foo()`. Shrugs. The whys behind the syntax are complicated and beyond our scope of discussion here.
 
+这似乎有些奇怪，并且增加了你的理解难度。你甚至会停下来思考，问什么不通过`var it = new foo()`的形式来执行generator函数呢，这语法后面的原因可能相当复杂并超出了我们的讨论范畴。
+
 So now, to start iterating on our generator function, we just do:
+
+好的，现在让我们开始迭代我们的generator函数，如下：
 
 ```javascript
 var message = it.next();
@@ -174,13 +194,19 @@ var message = it.next();
 
 That will give us back our `1` from the `yield 1` statment, but that's not the only thing we get back.
 
+通过上面的语句，`yield`表达式将1返回到函数外部，但是返回的值可能比想象中会多一些。
+
 ```javascript
 console.log(message); // { value:1, done:false }
 ```
 
 We actually get back an object from each `next()` call, which has a `value` property for the `yield`ed-out value, and `done` is a boolean that indicates if the generator function has fully completed or not.
 
+在每一调用`next()`后，我们实际上从`yield`表达式的返回值中获取到了一个对象，这个对象中有`value`字段，就是`yield`返回的值，同时还有一个布尔类型的`done`字段，其用来表示generator函数是否已经执行完毕。
+
 Let's keep going with our iteration:
+
+然我们把迭代执行完成。
 
 ```javascript
 console.log( it.next() ); // { value:2, done:false }
@@ -191,7 +217,11 @@ console.log( it.next() ); // { value:5, done:false }
 
 Interesting to note, `done` is still `false` when we get the value of `5` out. That's because *technically*, the generator function is not complete. We still have to call a final `next()` call, and if we send in a value, it has to be set as the result of that `yield 5`expression. Only **then** is the generator function complete.
 
+有趣的是，当我们获取到值为`5`的时候，`done`字段依然是`false`。这因为，实际上generator函数还么有执行完全，我们还可以再次调用`next()`。如果我们向函数内部传递一个值，其将被设置为`yield 5`表达式的返回值，只有在这时候，generator函数才执行完全。
+
 So, now:
+
+代码如下:
 
 ```javascript
 console.log( it.next() ); // { value:undefined, done:true }
@@ -199,9 +229,13 @@ console.log( it.next() ); // { value:undefined, done:true }
 
 So, the final result of our generator function was that we completed the function, but there was no result given (since we'd already exhausted all the `yield ___`statements).
 
+所以最终结果是，我们迭代执行完我们的generator函数，但是最终却没有结果（由于我们已经执行完所有的`yield__`表达式）。
+
 You may wonder at this point, can I use `return` from a generator function, and if I do, does that value get sent out in the `value` property?
 
-**Yes**...
+你可能会想，我能不能在generator函数中使用`return`语句，如果我这样这，返回值会不会在最终的`value`字段里面呢？
+
+**是**...
 
 ```javascript
 function *foo() {
@@ -215,11 +249,15 @@ console.log( it.next() ); // { value:1, done:false }
 console.log( it.next() ); // { value:2, done:true }
 ```
 
-... **and no.**
+... **不是.**
 
 It may not be a good idea to rely on the `return` value from generators, because when iterating generator functions with `for..of` loops (see below), the final `return`ed value would be thrown away.
 
+也许依赖于generator函数的最终返回值并不是一个最佳实践，因为当我们通过`for--of`循环来迭代generator函数的时候（如下），最终`return`的返回值将被丢弃（无视）。
+
 For completeness sake, let's also take a look at sending messages both into and out of a generator function as we iterate it:
+
+为了完整，让我们来看一个同时有双向数据通信的generator函数的例子：
 
 ```javascript
 function *foo(x) {
@@ -238,21 +276,35 @@ console.log( it.next( 13 ) );   // { value:42, done:true }
 
 You can see that we can still pass in parameters (`x` in our example) with the initial `foo( 5 )` iterator-instantiation call, just like with normal functions, making `x` be value `5`.
 
+你可以看到，我们依然可以通过`foo(5)`传递参数（在例子中是`x`）给generator函数，就像普通函数一样，是的参数`x`为`5`.
+
 The first `next(..)` call, we don't send in anything. Why? Because there's no `yield`expression to receive what we pass in.
+
+在第一次执行`next(..)`的时候，我们并没有传递任何值，为什么？因为在generator内部并没有`yield`表达式来接收我们传递的值。
 
 But if we *did* pass in a value to that first `next(..)` call, nothing bad would happen. It would just be a tossed-away value. ES6 says for generator functions to ignore the unused value in this case. (**Note:** At the time of writing, nightlies of both Chrome and FF are fine, but other browsers may not yet be fully compliant and may incorrectly throw an error in this case).
 
+假如我们真的在第一次调用`next(..)`的时候传递了值进去，也不会带来什么坏处，它只是将这个传入的值抛弃而已。ES6表明，generator函数在这种情况只是忽略了这些没有被用到的值。（注意：在写这篇文章的时候，Chrome和FF的每夜版支持这一特性，但是其他浏览有可能没有完全支持这一特性甚至可能会抛出错误）
+
 The `yield (x + 1)` is what sends out value `6`. The second `next(12)` call sends `12`to that waiting `yield (x + 1)` expression, so `y` is set to `12 * 2`, value `24`. Then the subsequent `yield (y / 3)` (`yield (24 / 3)`) is what sends out the value `8`. The third `next(13)` call sends `13` to that waiting `yield (y / 3)` expression, making `z` set to `13`.
+
+`yield(x + 1)`表达式将传递值`6`到外部，在第二次调用`next(12)`时候，传递`12`到generator函数内部作为`yield(x + 1)`表达式的值，因此`y`被赋值为`12 * 2`，值为`24`。接下来，下一条`yield(y / 3)`(`yield (24 / 3)`)将向外传递值`8`。第三次调用`next(13)`传递`13`到generator函数内部，给`yield(y / 3)`。是的`z`被设置为`13`.
 
 Finally, `return (x + y + z)` is `return (5 + 24 + 13)`, or `42` being returned out as the last `value`.
 
+最后，`return (x + y + z)`就是`return (5 + 24 + 13)`，也就是`42`将会作为最终的值返回出去。
+
 **Re-read that a few times.** It's weird for most, the first several times they see it.
 
-### `for..of`
+**重新阅读几遍**。最开始有些难以理解。
+
+#### `for..of`循环
 
 ES6 also embraces this iterator pattern at the syntactic level, by providing direct support for running iterators to completion: the `for..of` loop.
 
-Example:
+ES6在语法层面上大力拥抱迭代器模式，提供了`for..of`循环来直接支持迭代器的遍历。
+
+例如:
 
 ```javascript
 function *foo() {
@@ -274,11 +326,17 @@ console.log( v ); // still `5`, not `6` :(
 
 As you can see, the iterator created by `foo()` is automatically captured by the `for..of` loop, and it's automatically iterated for you, one iteration for each value, until a `done:true` comes out. As long as `done` is `false`, it automatically extracts the `value` property and assigns it to your iteration variable (`v` in our case). Once `done`is `true`, the loop iteration stops (and does nothing with any final `value` returned, if any).
 
+正如你所见，通过调用`foo()`生成的迭代器通过`for..of`循环来迭代，循环自动帮你对迭代器进行遍历迭代，每次迭代返回一个值，直到`done: true`，只要`done: false`，每次循环都将从`value`属性上获取到值赋值给迭代的变量（例子中的`v`）。一旦当`done`为`true`。循环迭代结束。（`for..of`循环不会对generator函数最终的return值进行处理）
+
 As noted above, you can see that the `for..of` loop ignores and throws away the `return 6` value. Also, since there's no exposed `next()` call, the `for..of` loop cannot be used in situations where you need to pass in values to the generator steps as we did above.
+
+正如你所看到的，`for..of`循环忽略了generator最后的`return 6`的值，同时，循环没有暴露`next()`出来，因此我们也不能够向generator函数内传递数据。
 
 ## Summary
 
 OK, so that's it for the basics of generators. Don't worry if it's a little mind-bending（令人费解的） still. All of us have felt that way at first!
+
+
 
 It's natural to wonder what this new exotic（异国的、外来的） toy is going to do practically for your code. There's a **lot** more to them, though. We've just scratched（挖出、掌握？） the surface. So we have to dive deeper before we can discover just how powerful they can/will be.
 
