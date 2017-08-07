@@ -1,6 +1,8 @@
 ### ES6 Generator 基础指南
 
 > 本文翻译自：[The Basics Of ES6 Generators](https://davidwalsh.name/es6-generators)
+>
+> 由于个人能力有限，翻译中难免有纰漏和错误，望不吝指正[issue](https://github.com/Jocs/jocs.github.io/issues/8)
 
 JavaScript ES6(译者注：ECMAScript 2015)中最令人兴奋的特性之一莫过于**Generator**函数，它是一种全新的函数类型。它的名字有些奇怪，初见其功能时甚至更会有些陌生。本篇文章旨在解释其基本工作原理，并帮助你理解为什么Generator将在未来JS中发挥强大作用。
 
