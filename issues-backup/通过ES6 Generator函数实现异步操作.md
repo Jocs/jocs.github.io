@@ -9,19 +9,35 @@
 
 Now that you've [seen ES6 generators](https://davidwalsh.name/es6-generators/) and [are more comfortable](https://davidwalsh.name/es6-generators-dive/) with them, it's time to really put them to use for improving our real-world code.
 
+到目前为止，你已经对[ES6 generators](https://davidwalsh.name/es6-generators/)有了初步了解并且能够[顺手的使用它](https://davidwalsh.name/es6-generators-dive/)，是时候准备将其运用到真实项目中提高现有代码质量。
+
 The main strength of generators is that they provide a single-threaded, synchronous-looking code style, **while allowing you to hide the asynchronicity away as an implementation detail**. This lets us express in a very natural way what the flow of our program's steps/statements is without simultaneously having to navigate asynchronous syntax and gotchas.
+
+Generator函数的强大在于**却允许你通过一些实现细节来将异步过程隐藏起来，**依然使代码保持一个单线程、同步语法的代码风格。这样的语法使得我们能够很自然的方式表达我们程序的步骤/语句流程，而不需要同时去操作一些异步的语法格式。
 
 In other words, we achieve a nice **separation of capabilities/concerns**, by splitting up the consumption of values (our generator logic) from the implementation detail of asynchronously fulfilling those values (the `next(..)`of the generator's iterator).
 
+换句话说，我们很好的对代码的功能/关注点进行了分离：通过将使用（消费）值得地方（generator函数中的逻辑）和通过异步流程来获取值（generator迭代器的`next()`方法）进行了有效的分离。
+
 The result? All the power of asynchronous code, with all the ease of reading and maintainability of synchronous(-looking) code.
+
+结果就是？不仅我们的代码具有强大的异步能力， 同时又保持了可读性和可维护性的同步语法的代码风格。
 
 So how do we accomplish this feat?
 
+那么我们怎么实现这些功能呢？
+
 ## Simplest Async
+
+#### 最简单的异步实现
 
 At its most simple, generators don't need anything *extra* to handle async capabilities that your program doesn't already have.
 
+最简单的情况，generator函数不需要额外的处理异步功能，因为你的程序也不需要这样做。
+
 For example, let's imagine you have this code already:
+
+例如，让我们想象你已经写下了如下代码：
 
 ```javascript
 function makeAjaxCall(url,cb) {
@@ -40,6 +56,8 @@ makeAjaxCall( "http://some.url.1", function(result1){
 ```
 
 To use a generator (without any additional decoration) to express this same program, here's how you do it:
+
+通过generator函数（不带任何其他装饰）来实现和上面代码相同的功能，实现代码如下：
 
 ```javascript
 function request(url) {
@@ -68,11 +86,19 @@ it.next(); // get it all started
 
 Let's examine how this works.
 
+让我来解释下上面代码是如何工作的：
+
 The `request(..)` helper basically wraps our normal `makeAjaxCall(..)` utility to make sure its callback invokes the generator iterator's `next(..)` method.
+
+`request(..)`帮助函数主要对普通的`makeAjaxCall(..)`实用函数进行包装，保证在在其回调函数中调用generator迭代器的`next(..)`方法。
 
 With the `request("..")` call, you'll notice it has *no return value* (in other words, it's `undefined`). This is no big deal, but it's something important to contrast with how we approach things later in this article: we effectively `yield undefined` here.
 
+在调用`request(..)`的过程中，你可能已经发现函数并没有显式的返回值（换句话说，其返回`undefined`）。这没有什么大不了的，但是与本文后面的方法相比，返回值就显得比较重要了。这儿我们有效的`yield undefined`。
+
 So then we call `yield ..` (with that `undefined` value), which essentially does nothing but pause our generator at that point. It's going to wait until the `it.next(..)` call is made to resume, which we've queued up (as the callback) to happen after our Ajax call finishes.
+
+
 
 But what happens to the *result* of the `yield ..` expression? We assign that to the variable `result1`. How does that have the result of the first Ajax call in it?
 
