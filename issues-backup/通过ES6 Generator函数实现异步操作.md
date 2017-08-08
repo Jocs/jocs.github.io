@@ -1,5 +1,7 @@
 ### ES6 Generators: Complete Series
 
+#### ES6 Generators：完整系列
+
 1. [The Basics Of ES6 Generators](https://davidwalsh.name/es6-generators)
 2. [Diving Deeper With ES6 Generators](https://davidwalsh.name/es6-generators-dive)
 3. [Going Async With ES6 Generators](https://davidwalsh.name/async-generators)
@@ -21,7 +23,7 @@ At its most simple, generators don't need anything *extra* to handle async capab
 
 For example, let's imagine you have this code already:
 
-```
+```javascript
 function makeAjaxCall(url,cb) {
     // do some ajax fun
     // call `cb(result)` when complete
@@ -39,7 +41,7 @@ makeAjaxCall( "http://some.url.1", function(result1){
 
 To use a generator (without any additional decoration) to express this same program, here's how you do it:
 
-```
+```javascript
 function request(url) {
     // this is where we're hiding the asynchronicity,
     // away from the main code of our generator
@@ -86,7 +88,7 @@ Notice also that I said "may occur". That's a pretty powerful thing in and of it
 
 We could change the implementation of `request(..)` to something like this:
 
-```
+```javascript
 var cache = {};
 
 function request(url) {
@@ -110,7 +112,7 @@ function request(url) {
 
 Now, our main generator code still looks like:
 
-```
+```javascript
 var result1 = yield request( "http://some.url.1" );
 var data = JSON.parse( result1 );
 ..
@@ -142,7 +144,7 @@ Recall above that we did `yield request(..)`, and that the `request(..)` utility
 
 Let's adjust that a little bit. Let's change our `request(..)` utility to be promises-based, so that it returns a promise, and thus what we `yield` out **is actually a promise** (and not `undefined`).
 
-```
+```javascript
 function request(url) {
     // Note: returning a promise now!
     return new Promise( function(resolve,reject){
@@ -155,7 +157,7 @@ function request(url) {
 
 We'll need a utility that controls our generator's iterator, that will receive those `yield`ed promises and wire them up to resume the generator (via `next(..)`). I'll call this utility `runGenerator(..)` for now:
 
-```
+```javascript
 // run (async) a generator to completion
 // Note: simplified approach: no error handling here
 function runGenerator(g) {
@@ -191,7 +193,7 @@ Key things to notice:
 
 Now, how do we use it?
 
-```
+```javascript
 runGenerator( function *main(){
     var result1 = yield request( "http://some.url.1" );
     var data = JSON.parse( result1 );
@@ -218,7 +220,7 @@ But now that we're using promises for managing the async part of the generator's
 
 First, let's explore error handling:
 
-```
+```Javascript
 // assume: `makeAjaxCall(..)` now expects an "error-first style" callback (omitted for brevity)
 // assume: `runGenerator(..)` now also handles error handling (omitted for brevity)
 
@@ -257,7 +259,7 @@ If a promise rejection (or any other kind of error/exception) happens while the 
 
 Now, let's see a more complex example that uses promises for managing even more async complexity:
 
-```
+```javascript
 function request(url) {
     return new Promise( function(resolve,reject){
         makeAjaxCall( url, resolve );
@@ -310,7 +312,7 @@ I will however briefly cover my own library's utility: [asynquence](http://githu
 
 First off, *asynquence* provides utilities for automatically handling the "error-first style" callbacks from the above snippets:
 
-```
+```javascript
 function request(url) {
     return ASQ( function(done){
         // pass an error-first style callback
@@ -323,7 +325,7 @@ That's **much nicer**, isn't it!?
 
 Next, *asynquence*'s `runner(..)` plugin consumes a generator right in the middle of an *asynquence* sequence (asynchronous series of steps), so you can pass message(s) in from the preceding step, and your generator can pass message(s) out, onto the next step, and all errors automatically propagate as you'd expect:
 
-```
+```javascript
 // first call `getSomeValues()` which produces a sequence/promise,
 // then chain off that sequence for more async steps
 getSomeValues()
@@ -382,7 +384,7 @@ There is a proposal for the ES7 timeline, which looks fairly likely to be accept
 
 It will probably look something like this:
 
-```
+```Javascript
 async function main() {
     var result1 = await request( "http://some.url.1" );
     var data = JSON.parse( result1 );
