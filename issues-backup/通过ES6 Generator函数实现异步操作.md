@@ -98,13 +98,19 @@ With the `request("..")` call, you'll notice it has *no return value* (in other 
 
 So then we call `yield ..` (with that `undefined` value), which essentially does nothing but pause our generator at that point. It's going to wait until the `it.next(..)` call is made to resume, which we've queued up (as the callback) to happen after our Ajax call finishes.
 
-
+当我们代码执行到`yield..`时（`yield`表达式返回`undefined`值），我们仅仅在这一点暂停了我们的generator函数而没有做其他任何事。等待着`it.next(..)`方法的执行来重新启动该generator函数，而`it.next()`方法是在Ajax获取数据结束后的回调函数（推入异步队列等待执行）中执行的。
 
 But what happens to the *result* of the `yield ..` expression? We assign that to the variable `result1`. How does that have the result of the first Ajax call in it?
 
+我们对`yield..`表达式的结果做了什么呢？我们将其结果赋值给了变量`result1`。那么我们是怎么将Ajax请求结果放到该`yield..`表达式的返回值中的呢？
+
 Because when `it.next(..)` is called as the Ajax callback, it's passing the Ajax response to it, which means that value is getting sent back into our generator at the point where it's currently paused, which is in the middle of the `result1 = yield ..` statement!
 
+因为当我们在Ajax的回调函数中调用`it.next(..)`方法的时候，我们将Ajax的返回值作为参数传递给`next(..)`方法，这意味着该Ajax返回值传递到了generator函数内部，当前函数内部暂停的位置，也就是`result1 = yield..`语句中部。
+
 That's really cool and super powerful. In essence, `result1 = yield request(..)` is **asking for the value**, but it's (almost!) completely hidden from us -- at least us not needing to worry about it here -- that the implementation under the covers causes this step to be asynchronous. It accomplishes that asynchronicity by hiding the *pause* capability in `yield`, and separating out the *resume* capability of the generator to another function, so that our main code is just making a **synchronous(-looking) value request**.
+
+上面的代码真的很酷并且强大。本质上，`result1 = yield request(..)`的**作用是用来请求值**，但是请求的过程几乎完全对我们不可见- -或者至少在此处我们不用怎么担心它 - - 因为底层的实现使得该步骤成为了异步操作。generator函数通过通过在`yield`表达式中隐藏的暂停功能以及将重新启动generator函数的功能分离到另外一个函数中，来实现了异步操作。因此在主要代码中我们通过一个**同步的代码风格来请求值**。
 
 The exact same goes for the second `result2 = yield result(..)` statement: it transparently pauses & resumes, and gives us the value we asked for, all without bothering us about any details of asynchronicity at that point in our coding.
 
