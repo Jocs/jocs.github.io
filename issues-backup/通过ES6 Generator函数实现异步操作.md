@@ -114,6 +114,8 @@ That's really cool and super powerful. In essence, `result1 = yield request(..)`
 
 The exact same goes for the second `result2 = yield result(..)` statement: it transparently pauses & resumes, and gives us the value we asked for, all without bothering us about any details of asynchronicity at that point in our coding.
 
+第二句`result2 = yield result()`（译者注：作者的意思应该是`result2 = yield request(..)`）代码，和上面的代码工作原理几乎无异：通过明显的暂停和重新启动机制来获取到我们请求的数据，而在generator函数内部我们不用再为一些异步代码细节为烦恼。
+
 Of course, `yield` is present, so there *is* a subtle hint that something magical (aka async) *may occur* at that point. But `yield` is a pretty minor syntactic signal/overhead compared to the hellish nightmares of nested callbacks (or even the API overhead of promise chains!).
 
 Notice also that I said "may occur". That's a pretty powerful thing in and of itself. The program above always makes an async Ajax call, but **what if it didn't?** What if we later changed our program to have an in-memory cache of previous (or prefetched) Ajax responses? Or some other complexity in our application's URL router could in some cases fulfill an Ajax request *right away*, without needing to actually go fetch it from a server?
