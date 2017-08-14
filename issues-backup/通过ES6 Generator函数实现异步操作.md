@@ -403,9 +403,13 @@ runGenerator( function *main(){
 
 `Promise.all([ .. ])` constructs a promise that's waiting on the three sub-promises, and it's that main promise that's `yield`ed out for the `runGenerator(..)` utility to listen to for generator resumption. The sub-promises can receive a response that looks like another URL to redirect to, and chain off another sub-request promise to the new location. To learn more about promise chaining, [read this article section](http://blog.getify.com/promises-part-5/#the-chains-that-bind-us).
 
-`Promise.all([ .. ])`会构建一个新的promise来等待其内部的三个并行promise的完成，该新的promise将会被`yield`表达式传递到外部给`runGenerator(..)`工具函数中，`runGenerator()`函数监听该新生成的promise的完成，以便重新启动generator函数。
+`Promise.all([ .. ])`会构建一个新的promise来等待其内部的三个并行promise的完成，该新的promise将会被`yield`表达式传递到外部给`runGenerator(..)`工具函数中，`runGenerator()`函数监听该新生成的promise的完成，以便重新启动generator函数。并行的promise的返回值可能会成为另外一个URL的组成部分，然后通过`yield`表达式将另外一个promise传递到外部。关于更多的promise链式调用，参见[文章](http://blog.getify.com/promises-part-5/#the-chains-that-bind-us)
 
 Any kind of capability/complexity that promises can handle with asynchronicity, you can gain the sync-looking code benefits by using generators that `yield` out promises (of promises of promises of ...). **It's the best of both worlds.**
+
+promise可以处理任何复杂的异步过程，你可以通过generator函数`yield`出去promises（或者promise返回promise）来获取到同步代码的语法形式。（相对于promise或者generator两个ES6的新特性，他们的结合或许是最好的模式）
+
+
 
 ## `runGenerator(..)`: Library Utility
 
