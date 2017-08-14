@@ -172,7 +172,7 @@ The earlier Ajax code examples here suffer from all the same [Inversion of Contr
 2. If the `makeAjaxCall(..)` utility isn't under our control, and it happens to call the callback multiple times, or signal both success and error simultaneously, etc, then our generator will go haywire (uncaught errors, unexpected values, etc). Handling and preventing such issues is lots of repetitive manual work, also possibly not portable.
 3. Often times we need to do more than one *task* "in parallel" (like two simultaneous Ajax calls, for instance). Since generator `yield` statements are each a single pause point, two or more cannot run at the same time -- they have to run one-at-a-time, in order. So, it's not very clear how to fire off multiple tasks at a single generator `yield` point, without wiring up lots of manual code under the covers.
 
-As you can see, all of these problems are *solvable*, but who really wants to reinvent these solutions every time. We need a more powerful pattern that's designed specifically as a [trustable, reusable solution](http://blog.getify.com/promises-part-3/) for our generator-based async coding.
+As you can see, all of these problems are *solvable*, but who really wants to reinvent(重复使用) these solutions every time. We need a more powerful pattern that's designed specifically as a [trustable, reusable solution](http://blog.getify.com/promises-part-3/) for our generator-based async coding.
 
 That pattern? **yielding out promises**, and letting them resume the generator when they fulfill.
 
@@ -336,7 +336,7 @@ Any kind of capability/complexity that promises can handle with asynchronicity, 
 
 ## `runGenerator(..)`: Library Utility
 
-We had to define our own `runGenerator(..)` utility above to enable and smooth out this generator+promise awesomeness. We even omitted (for brevity sake) the full implementation of such a utility, as there's more nuance details related to error-handling to deal with.
+We had to define our own `runGenerator(..)` utility above to enable and smooth out this generator+promise awesomeness. We even omitted (for brevity sake为简略起见) the full implementation of such a utility, as there's more nuance(细微差别) details related to error-handling to deal with.
 
 But, you don't want to write your own `runGenerator(..)` do you?
 
@@ -443,12 +443,22 @@ In the meantime, libraries like *asynquence* give us these runner utilities to m
 
 ## Summary
 
-Put simply: a generator + `yield`ed promise(s) combines the best of both worlds to get really powerful and elegant sync(-looking) async flow control expression capabilities. With simple wrapper utilities (which many libraries are already providing), we can automatically run our generators to completion, including sane and sync(-looking) error handling!
+Put simply: a generator + `yield`ed promise(s) combines the best of both worlds to get really powerful and elegant sync(-looking) async flow control expression capabilities. With simple wrapper utilities (which many libraries are already providing), we can automatically run our generators to completion, including sane（健全的） and sync(-looking) error handling!
+
+简单地说：通过把promise和generator函数两个世界组合起来成为`generator + yield promise(s)`模式，该模式具有强大的能力及同步语法形式的异步表达能力。通过一些简单包装的工具（很多库已经提供了这些工具），我们可以让generator函数自动执行完成，并且提供了健全和同步语法形式的错误处理机制。
 
 And in ES7+ land, we'll probably see `async function`s that let us do that stuff even without a library utility (at least for the base cases)!
 
+同时在ES7+的将来，我们也许将迎来`async function`函数，async 函数将不需要上面那些工具库就能够解决上面遇到的那些问题（至少对于基础问题是可行的）！
+
 **The future of async in JavaScript is bright**, and only getting brighter! I gotta wear shades.
+
+JavaScript的异步处理机制的未来是光明的，而且会越来越光明！我要带墨镜了（译者注：这儿是作者幽默的说法）。
 
 But it doesn't end here. There's one last horizon we want to explore:
 
-What if you could tie 2 or more generators together, let them run independently but "in parallel", and let them send messages back and forth as they proceed? That would be some super powerful capability, right!?! This pattern is called "CSP" (communicating sequential processes). We'll explore and unlock the power of CSP in the next article. Keep an eye out!
+但是，我们并没有在这儿就结束本系列文章，这儿还有最后一个方面我们想要研究：
+
+What if you could tie 2 or more generators together, let them run independently but "in parallel", and let them send messages back and forth as they proceed? That would be some super powerful capability, right!?! This pattern is called "CSP" (communicating sequential processes). We'll explore and unlock the power of CSP in the next article. Keep an eye out(密切关注)!
+
+倘若你想要将两个或多个generator函数结合在一起，让他们独立平行的运行，并且在它们执行的过程中来来回回得传递信息？这一定会成为一个相当强大的特性，难道不是吗？这一模式被称作“CSP”(communicating sequential processes)。我们将在下面一篇文章中解锁CSP的能力。敬请密切关注。
