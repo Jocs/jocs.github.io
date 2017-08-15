@@ -3,8 +3,10 @@
 echo "我要push代码"
 read commitMsg
 
-now="${commitMsg}" || `date`
+msg="${commitMsg}" || `date`
 
 git add .
-git commit -m "push ${now}"
+
+git commit -m "push ${msg}"
+
 git push
