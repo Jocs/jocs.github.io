@@ -1,12 +1,17 @@
 #! /bin/bash
 
-echo "我要push代码"
+echo "请输入commit message，不填将会生成单钱时间戳。"
+
 read commitMsg
 
-msg="${commitMsg}" || `date`
+if [ -z "${commitMsg}" ]; then
+  msg=`date`
+else
+  msg="${commitMsg}"
+fi
 
 git add .
 
-git commit -m "push ${msg}"
+git commit -m "Message: ${msg}"
 
 git push
