@@ -1,8 +1,9 @@
 #! /bin/bash
 
 echo "我要push代码"
+read commitMsg
 
-now=`date`
+now="${commitMsg}" || `date`
 
 git add .
 git commit -m "push ${now}"
