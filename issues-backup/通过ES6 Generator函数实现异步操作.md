@@ -1,5 +1,3 @@
-### ES6 Generators: Complete Series
-
 #### ES6 Generators：完整系列
 
 1. [The Basics Of ES6 Generators](https://davidwalsh.name/es6-generators)
