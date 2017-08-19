@@ -1,4 +1,8 @@
-#### ES6 Generators：完整系列
+> 本文翻译自 [Going Async With ES6 Generators](https://davidwalsh.name/async-generators)
+>
+> 由于个人能力知识有限，翻译过程中难免有纰漏和错误，还望指正[Issue](https://github.com/Jocs/jocs.github.io/issues/11)
+
+####ES6 Generators：完整系列
 
 1. [The Basics Of ES6 Generators](https://davidwalsh.name/es6-generators)
 2. [Diving Deeper With ES6 Generators](https://davidwalsh.name/es6-generators-dive)
