@@ -7,7 +7,7 @@
 
 Now that you've [seen ES6 generators](https://davidwalsh.name/es6-generators/) and [are more comfortable](https://davidwalsh.name/es6-generators-dive/) with them, it's time to really put them to use for improving our real-world code.
 
-到目前为止，你已经对[ES6 generators](https://davidwalsh.name/es6-generators/)有了初步了解并且能够[顺手的使用它](https://davidwalsh.name/es6-generators-dive/)，是时候准备将其运用到真实项目中提高现有代码质量。
+到目前为止，你已经对[ES6 generators](https://davidwalsh.name/es6-generators/)有了初步了解并且能够[方便的使用它](https://davidwalsh.name/es6-generators-dive/)，是时候准备将其运用到真实项目中提高现有代码质量。
 
 The main strength of generators is that they provide a single-threaded, synchronous-looking code style, **while allowing you to hide the asynchronicity away as an implementation detail**. This lets us express in a very natural way what the flow of our program's steps/statements is without simultaneously having to navigate asynchronous syntax and gotchas.
 
