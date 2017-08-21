@@ -7,13 +7,23 @@
 
 If you've read and digested [part 1](https://davidwalsh.name/es6-generators/), [part 2](https://davidwalsh.name/es6-generators-dive/), and [part 3](https://davidwalsh.name/async-generators/) of this blog post series, you're probably feeling pretty confident with ES6 generators at this point. Hopefully you're inspired to really push the envelope and see what you can do with them.
 
+如果你已经阅读并消化了本系列的前三篇文章：[第一篇](https://davidwalsh.name/es6-generators/)、[第二篇](https://davidwalsh.name/es6-generators-dive/)、[第三篇](https://davidwalsh.name/async-generators/)，那么在此时你已经对如何使用ES6 generator函数胸有成竹，并且我也衷心希望你能够受到前三篇文章的鼓舞，实际去使用一下generator函数（挑战极限），探究其究竟能够帮助我们完成什么样的工作。
+
 Our final topic to explore is kinda bleeding edge stuff, and may twist your brain a bit (still twisting mine, TBH). Take your time working through and thinking about these concepts and examples. Definitely read other writings on the topic.
+
+我们最后一个探讨的主题可能和一些前沿知识有关，甚至需要动脑筋才能够理解（诚实的说，一开始我也有些迷糊）。花一些时间来练习和思考这些概念和示例。并且去实实在在的阅读一些别人写的关于此主题的文章。
 
 The investment you make here will really pay off in the long run. I'm totally convinced that the future of sophisticated async capability in JS is going to rise from these ideas.
 
+此刻你花时间（投资）来弄懂这些概念对你长远来看是有益的。并且我完全深信在将来JS处理复杂异步的操作能力将从这些观点中应运而生。
+
 ## Formal CSP (Communicating Sequential Processes)
 
+####正式的CSP（Communicating Sequential Processes）
+
 First off, I am completely inspired in this topic almost entirely due to the fantastic work of [David Nolen](http://github.com/swannodette) [@swannodette](http://twitter.com/swannodette). Seriously, read whatever he writes on the topic. Here's some links to get you started:
+
+起初，关于该主题的热情我完全受启发于 [David Nolen](http://github.com/swannodette) [@swannodette](http://twitter.com/swannodette)的杰出工作。严格说来，我阅读了他写的关于该主题的所有文章。下面这些链接可以帮助你对CSP有个初步了解：
 
 - ["Communicating Sequential Processes"](http://swannodette.github.io/2013/07/12/communicating-sequential-processes/)
 - ["ES6 Generators Deliver Go Style Concurrency"](http://swannodette.github.io/2013/08/24/es6-generators-and-csp/)
@@ -21,19 +31,33 @@ First off, I am completely inspired in this topic almost entirely due to the fan
 
 OK, now to my exploration of the topic. I don't come to JS from a formal background in Clojure, nor do I have any experience with Go or ClojureScript. I found myself quickly getting kinda lost in those readings, and I had to do a lot of experimentation and educated guessing to glean useful bits from it.
 
+OK，就我在该主题上面的研究而言，在开始写JS代码之前我并没有编写Clojure语言的背景，也没有使用Go和ClojureScript语言的经验。在阅读上面文章的过程中，我很快就发现我有一点弄不明白了，而不得不去做一些实验性学习或者学究性的去思考，并从中获取一些有用的知识。
+
 In the process, I think I've arrived at something that's of the same spirit, and goes after the same goals, but comes at it from a much-less-formal way of thinking.
 
-What I've tried to do is build up a simpler take on the Go-style CSP (and ClojureScript core.async) APIs, while preserving (I hope!) most of the underlying capabilities. It's entirely possible that those smarter than me on this topic will quickly see things I've missed in my explorations thus far. If so, I hope my explorations will evolve and progress, and I'll keep sharing such revelations with you readers!
+在这个过程中，我感觉我达到了和作者相同的思维境界，并且追求相同的目标，但是却采取了另一种不那么正规的思维方式。
+
+What I've tried to do is build up a simpler take on the Go-style CSP (and ClojureScript core.async) APIs, while preserving (I hope!) most of the underlying capabilities. It's entirely possible that those smarter than me on this topic will quickly see things I've missed in my explorations thus far. If so, I hope my explorations will evolve and progress, and I'll keep sharing such revelations（启示） with you readers!
+
+我所努力并尝试去构建一个更加简单的Go语言风格的CSP(或者ClojureScript语言中的core.async)APIs，并且（我希望）竟可能的保留那些潜在的能力。在阅读我文章的那些聪明的读者一定能够容易的发现我对该主题研究中的一些缺陷和不足，如果这样的话，我希望我的研究能够演进并持续发展下去，我也会坚持和我广大的读者分享我在CSP上的更多启示。
 
 ## Breaking CSP Theory Down (a bit)
 
 What is CSP all about? What does it mean to say "communicating"? "Sequential"? What are these "processes"?
 
+CSP究竟是什么呢？在CSP概念下讲述的“communicating”、“Sequential”又是什么意思呢？“processes”有代表什么？
+
 First and foremost, CSP comes from [Tony Hoare's book *"Communicating Sequential Processes"*](http://www.usingcsp.com/). It's heavy CS theory stuff, but if you're interested in the academic side of things, that's the best place to start. I am by no means going to tackle the topic in a heady, esoteric, computer sciency way. I'm going to come at it quite informally.
+
+首先，CSP的概念是从Tony Hoare的[书  *"Communicating Sequential Processes"*](http://www.usingcsp.com/)中首次被提及。这本书主要是一些CS理论上的东西，但是如果你对一些学术上的东西很感兴趣，相信这本书是一个很好的开端。在关于CSP这一主题上我绝不会从一些头疼的、难懂的计算机科学知识开始，我决定从一些非正式入口开始关于CSP的讨论。
 
 So, let's start with "sequential". This is the part you should already be familiar with. It's another way of talking about single-threaded behavior and the sync-looking code that we get from ES6 generators.
 
+因此，让我们先从“sequential”这一概念入手，关于这部分你可能已经相当熟悉，这也是我们曾经讨论过的单线程行为的另一种表述或者说我们在同步形式的ES6 generator函数中也曾遇到过。
+
 Remember how generators have syntax like this:
+
+回忆如下的generator函数语法：
 
 ```javascript
 function *main() {
@@ -44,6 +68,8 @@ function *main() {
 ```
 
 Each of those statements is executed sequentially (in order), one at a time. The `yield` keyword annotates points in the code where a blocking pause (blocking only in the sense of the generator code itself, not the surrounding program!) may occur, but that doesn't change anything about the top-down handling of the code inside `*main()`. Easy enough, right?
+
+
 
 Next, let's talk about "processes". What's that all about?
 
