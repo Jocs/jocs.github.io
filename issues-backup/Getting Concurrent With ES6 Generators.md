@@ -542,10 +542,20 @@ Our `state(..)` helper above actually does the *hard work* of handling the [`yie
 
 The key to CSP is joining two or more generator "processes" together, giving them a shared communication channel, and a way to transfer control between each other.
 
+CSP 模式的关键点在于将两个或者多个 generator「进程」组合在一起，并为他们提供一个共享的通信渠道，和一个在其彼此之间传递控制权的方法。
+
 There are a number of libraries that have more-or-less taken a fairly formal approach in JS that matches Go and Clojure/ClojureScript APIs and/or semantics. All of these libraries have really smart developers behind them, and they all represent great resources for further investigation/exploration.
+
+市面上已经有很多库多多少少实现了GO 和 Clojure/ClojureScript APIs 相同或者相同语义的 CSP 模式。在这些库的背后是一些聪明而富有创造力的开发者门，这些库的出现，也意味着需要更大的资源投入以及研究。
 
 [asynquence](http://github.com/getify/asynquence) tries to take a somewhat less-formal approach while hopefully still preserving the main mechanics. If nothing else, *asynquence*'s [`runner(..)`](https://github.com/getify/asynquence/tree/master/contrib#runner-plugin) makes it pretty easy to start [playing around with CSP-like generators](https://github.com/getify/asynquence/tree/master/contrib#csp-style-concurrency) as you experiment and learn.
 
+[asynquence](http://github.com/getify/asynquence) 尝试着通过着通过不那么正式的方法却依然希望给大家呈现 CSP 的运行机制，只不过，asynquence 的`runner(..)`方法使得了我们通过 generator 模拟 CSP 模式变得如此简单，正如你在本篇文章所学的那样。
+
 The best part though is that *asynquence* CSP works inline [with the rest of](https://davidwalsh.name/asynquence-part-1) its [other async capabilities](https://davidwalsh.name/asynquence-part-2) (promises, generators, flow control, etc). That way, you get the best of all worlds, and you can use whichever tools are appropriate for the task at hand, all in one small lib.
 
+asynquence CSP 模式中最为出色的部分就是你将所有的[异步处理手段](https://davidwalsh.name/asynquence-part-2)（promise，generators，flow control 等）以及[剩下的](https://davidwalsh.name/asynquence-part-1)有机的组合在了一起，你不同异步处理结合在一起，因此你可以任何合适的手段来处理你的任务，而且，都在同一个小小的库中。
+
 Now that we've explored generators in quite a bit of detail over these last four posts, my hope is that you're excited and inspired to explore how you can revolutionize（彻底革命） your own async JS code! What will you build with generators?
+
+现在，在结束该系列最后一篇文章后，我们已经完成了对 generator 函数详尽的研究，我所希望的是你能够在阅读这些文章后有所启发，并对你现有的代码进行一次彻底革命！你将会用 generator 函数创造什么奇迹呢？
