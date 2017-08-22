@@ -71,41 +71,73 @@ function *main() {
 
 Each of those statements is executed sequentially (in order), one at a time. The `yield` keyword annotates points in the code where a blocking pause (blocking only in the sense of the generator code itself, not the surrounding program!) may occur, but that doesn't change anything about the top-down handling of the code inside `*main()`. Easy enough, right?
 
-
+上面代码片段中的语句都按顺序一条接一条执行执行，同一时间不能够执行多条语句。`yield` 关键字表示代码在该处将会被阻塞式暂停（阻塞的仅仅是 generator 函数代码本身，而不是整个程序），但是这并没有引起 `*main()` 函数内部自顶向下代码的丝毫改变。是不是很简单，难道不是吗？
 
 Next, let's talk about "processes". What's that all about?
 
+接下来，让我们讨论下「processes」。「processes」究竟是什么呢？
+
 Essentially, a generator sort of acts like a virtual "process". It's a self-contained piece of our program that could, if JavaScript allowed such things, run totally in parallel to the rest of the program.
+
+本质上说，一个 generator 函数的作用相当于虚拟的「进程」。它是一段高度自控的程序，如果 JavaScript 允许的话，它能够和程序中的其他代码并行运行。
 
 Actually, that'd fudging things a little bit. If the generator accesses shared memory (that is, if it accessed "free variables" besides its own internal local variables), it's not quite so independent. But let's just assume for now we have a generator function that doesn't access outside variables (so FP theory would call it a "combinator"). So, it could *in theory* run in/as its own process.
 
+说实话，上面有一点捏造事实了，如果 generator 函数能够获取到共享内存中的值（也就是说，如果它能够获取到一些除它本身内部的局部变量外的「自由变量」），那么它也就不那么独立了。但是现在让我们先假设我们拥有一个 generator 函数，它不会去获取函数外部的变量（在函数式编程中通常称之为「组合子」）。因此理论上 generator 函数可以在其自己的进程中独立运行。
+
 But we said "processes" -- plural -- because the important part here is having two or more going *at once*. In other words, two or more generators that are paired together, generally to cooperate to complete some bigger task.
+
+但是我们这儿所讨论的是「processes」\-\-复数形式\-\-，因为更重要的是我们拥有两个或者多个的进程。换句话说，两个或者多个 generator 函数通常会同时出现在我们的代码中，然后协作完成一些更加复杂的任务。
 
 Why separate generators instead of just one? The most important reason: **separation of capabilities/concerns**. If you can look at task XYZ and break it down into constituent sub-tasks like X, Y, and Z, then implementing each in its own generator tends to lead to code that can be more easily reasoned about and maintained.
 
+为什么将 generator 函数拆分为多个而不是一个呢？最重要的原因：**实现功能和关注点的解耦**。如果你现在正在着手一项 XYZ 的任务，你将这个任务拆分成了一些子任务，如 X, Y和 Z,并且每一个任务都通过一个 generator 函数实现，现在这样的拆分和解耦使得你的代码更加易懂且可维护性更高。
+
 This is the same sort of reasoning you use when you take a function like `function XYZ()` and break it down into `X()`, `Y()`, and `Z()` functions, where `X()`calls `Y()`, and `Y()` calls `Z()`, etc. We break down functions into separate functions to get better separation of code, which makes code easier to maintain.
+
+这个你将一个`function XYZ()`分解为三个函数`X()`,`Y()`,`Z()`,然后在`X()`函数中调用`Y()`，在`Y()`函数中调用`Z()`的动机是一样的，我们将一个函数分解成多个函数，分离的代码更加容易推理，同时也是的代码可维护性增强。
 
 **We can do the same thing with multiple generators.**
 
+**我们可以通过多个 generator 函数来完成相同的事情**
+
 Finally, "communicating". What's that all about? It flows from the above -- cooperation -- that if the generators are going to work together, they need a communication channel (not just access to the shared surrounding lexical scope, but a real shared communication channel they all are given exclusive access to).
+
+最后，「communicating」。这有表达什么意思呢？他是从上面\-\-协程—的概念中演进而来，协程的意思也就是说多个 generator 函数可能会相互协作，他们需要一个交流沟通的渠道（不仅仅是能够从静态作用域中获取到共享的变量，同时是一个真实能够分享沟通的渠道，所有的 generator 函数都能够通过独有的途径与之交流）。
 
 What goes over this communication channel? Whatever you need to send (numbers, strings, etc). In fact, you don't even need to actually send a message over the channel to communicate over the channel. "Communication" can be as simple as coordination -- like transferring control from one to another.
 
+这个通信渠道有哪些作用呢？实际上不论你想发送什么数据（数字 number，字符串 strings 等），你实际上不需要通过渠道来实际发送消息来和渠道进行通信。「Communication」和协作一样简单，就和将控制权在不同 generator 函数之间传递一样。
+
 Why transferring control? Primarily because JS is single-threaded and literally only one of them can be actively running at any given moment. The others then are in a running-paused state, which means they're in the middle of their tasks, but are just suspended（暂停的）, waiting to be resumed when necessary.
+
+为什么需要传递控制权？最主要的原因是 JS是单线程的，在同一时间只允许一个 generator 函数的执行。其他 generator 函数处于运行期间的暂停状态，也就是说这些暂停的 generator 函数都在其任务执行过程中停了下来，仅仅是停了下来，等待着在必要的时候重新启动运行。
 
 It doesn't seem to be realistic that arbitrary independent "processes" could *magically*cooperate and communicate. The goal of loose coupling is admirable but impractical（不切实际的、不现实的）.
 
-Instead, it seems like any successful implementation of CSP is an intentional factorization of an existing, well-known set of logic for a problem domain, where each piece is designed specifically to work well with the other pieces.
+这并不是说我们实现了（译者注：作者的意思应该是在没有其他库的帮助下）任意独立的「进程」可以魔法般的进行协作和通信。
 
-Maybe I'm totally wrong on this, but I don't see any pragmatic way yet that any two random generator functions could somehow easily be glued together into a CSP pairing. They would both need to be designed to work with the other, agree on the communication protocol, etc.
+Instead, it seems like any successful implementation of CSP is an intentional（策划的） factorization（因式分解） of an existing, well-known set of logic for a problem domain, where each piece is designed specifically to work well with the other pieces.
+
+相反，显而易见的是任意成功得 CSP 实现都是精心策划的，将现有的问题领域进行逻辑上的分解，每一块在设计上都与其他块协调工作。// TODO 这一段好难翻译啊。
+
+Maybe I'm totally wrong on this, but I don't see any pragmatic（实际的） way yet that any two random generator functions could somehow easily be glued（胶合的） together into a CSP pairing. They would both need to be designed to work with the other, agree on the communication protocol, etc.
+
+我关于 CSP 的理解也许完全错了，但是在实际过程中我并没有看到两个任意的 generator 函数能够以某种方式胶合在一起成为一个 CSP 模式，这两个 generator 函数必然需要某些特殊的设计才能够相互的通信，比如双方都遵守相同的通信协议等。
 
 ## CSP In JS
 
 There are several interesting explorations in CSP theory applied to JS.
 
+在通过 JS 实现 CSP 理论的过程中已经有一些有趣的探索了。
+
 The aforementioned David Nolen has several interesting projects, including [Om](https://github.com/swannodette/om), as well as [core.async](http://www.hakkalabs.co/articles/core-async-a-clojure-library/). The [Koa](http://koajs.com/) library (for node.js) has a very interesting take, primarily through its `use(..)` method. Another library that's pretty faithful to the core.async/Go CSP API is [js-csp](https://github.com/ubolonton/js-csp).
 
+上文我们提及的 David Nolen 有一些有趣的项目，包括 [Om](https://github.com/swannodette/om)和 [core.async](http://www.hakkalabs.co/articles/core-async-a-clojure-library/) ，[Koa](http://koajs.com/)通过其`use(..)`方法对 CSP 也有些有趣的尝试。另外一个库 [js-csp](https://github.com/ubolonton/js-csp)完全忠实于 core.async/Go CSP API。
+
 You should definitely check out those great projects to see various approaches and examples of how CSP in JS is being explored.
+
+你应该切实的去浏览下上述的几个杰出的项目，去发现通过 JS实现 CSP 的的不同途径和实例的探讨。
 
 ### asynquence's `runner(..)`: Designing CSP
 
