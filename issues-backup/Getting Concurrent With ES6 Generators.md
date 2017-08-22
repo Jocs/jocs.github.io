@@ -554,6 +554,8 @@ Our `state(..)` helper above actually does the *hard work* of handling the [`yie
 
 ## Summary
 
+####总结
+
 The key to CSP is joining two or more generator "processes" together, giving them a shared communication channel, and a way to transfer control between each other.
 
 CSP 模式的关键点在于将两个或者多个 generator「进程」组合在一起，并为他们提供一个共享的通信渠道，和一个在其彼此之间传递控制权的方法。
