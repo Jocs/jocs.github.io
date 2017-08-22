@@ -368,9 +368,15 @@ function *referee(table){
 
 I've called the control-token `table` to match the problem domain (a ping-pong game). It's a nice semantic that a player "yields the table" to the other when he hits the ball back, isn't it?
 
+我们称「控制中token」为`table`，这正好和（乒乓球游戏）专业领域中的称呼想一致，这是一个很好的语义化，一个游戏玩家通过用拍子将球「yields 传递 table」给另外一个玩家，难道不够形象吗？
+
 The `while` loop in `*referee()` just keeps yielding the `table` back to the players as long as his alarm on his stopwatch hasn't gone off. When it does, he takes over and declares the game over with `"Time's up!"`.
 
+`while`循环的作用就是在`*referee()`进程中，只要警报器没有吹响，他将不断地通过 yield 表达式将 table 传递给玩家。当警报器吹响，他掌管了控制权，宣布游戏结束「时间到了」。
+
 Now, let's look at the `*player()` generator (which we use two instances of):
+
+现在，让我们来看看`*player()`generator 函数（在我们的代码中我们两次使用了该实例）：
 
 ```javascript
 function *player(table) {
@@ -398,13 +404,23 @@ function *player(table) {
 
 The first player takes his name off the first message's array (`"ping"`), then the second player takes his name (`"pong"`), so they can both identify themselves properly. Both players also keep a reference to the shared `ball` object (with its `hits` counter).
 
+第一位玩家从消息数组中取得他的名字「ping」，然后，第二位玩家取得他的名字「pong」，这样他们可以很好的分辨彼此的身份。两位玩家同时共享`ball`这个对象的引用（通过他的`hits`计数）。
+
 While the players haven't yet heard the closing message from the referee, they "hit" the `ball` by upping its `hits` counter (and outputting a message to announce it), then they wait for `500` ms (just to fake the ball *not* traveling at the speed of light!).
+
+只要玩家没有从裁判口中听到结束的消息，他们就将通过将计数器加一来「hit」`ball`（并且会输入一条计数器消息），然后，等待`500`ms（仅仅是模拟乒乓球的飞行耗时，不要还以为乒乓球以光速飞行呢）。
 
 If the game is still going, they then "yield the table" back to the other player.
 
+如果游戏依然进行，游戏玩家「yield 传递 table」给另外一位玩家。
+
 That's it!
 
+就是这样！
+
 [Take a look at the demo's code](http://jsbin.com/qutabu/1/edit?js,output) to get a complete in-context code listing to see all the pieces working together.
+
+[查看一下演示用例的代码](http://jsbin.com/qutabu/1/edit?js,output)获取一份完整用例的代码，看看不同代码片段之间是如何协同工作的。
 
 ## State Machine: Generator Coroutines
 
@@ -412,9 +428,15 @@ That's it!
 
 One last example: defining a [state machine](http://en.wikipedia.org/wiki/Finite-state_machine) as a set of generator coroutines（协同程序） that are driven by a simple helper.
 
+最后一个例子，通过一个 generator 函数集合组成的协同程序来定义一个状态机，这一协同程序都是通过一个简单的工具函数来运行的。
+
 [Demo](http://jsbin.com/luron/1/edit?js,console) (note: use a very recent nightly of FF or Chrome, with ES6 JavaScript support, to see generators work)
 
+[演示用例](http://jsbin.com/luron/1/edit?js,console)（注意：使用最新的每夜版 FF 或者 Chrome，并且支持 ES6的语法特性，看看 generator 函数如何工作）
+
 First, let's define a helper for controlling our finite state handlers:
+
+首先让我们来定义一个工具函数，来帮助我们控制我们有限的状态：
 
 ```javascript
 function state(val,handler) {
