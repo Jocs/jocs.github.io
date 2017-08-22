@@ -270,29 +270,47 @@ Now might be a good time to [go try it yourself](http://jsbin.com/tunec/2/edit?j
 
 ## Another Toy Demo Example
 
-####另外一个「玩具」用例
+####另外一个「玩具」演示用例
 
-Let's now examine one of the classic CSP examples, but let's come at it from the simple observations I've made thus far, rather than from the academic-purist perspective it's usually derived from.
+Let's now examine one of the classic CSP examples, but let's come at it from the simple observations I've made thus far, rather than from the academic-purist（纯化论者） perspective（观点） it's usually derived（导出的、衍生的、派生的） from.
 
-如果那我们来看看最为经典的 CSP 例子，
+如果那我们来看看最为经典的 CSP 例子，但是希望大家从文章上面的解释及发现来入手，而不是像通常情况一样，从一些学术纯化论者的观点中导出。
 
 **Ping-pong**. What a fun game, huh!? It's my favorite *sport*.
 
+**Ping-pong**。多么好玩的游戏，啊！它也是我最喜欢的体育运动了。
+
 Let's imagine you have implemented code that plays a ping-pong game. You have a loop that runs the game, and you have two pieces of code (for instance, branches in an `if` or `switch` statement) that each represent the respective player.
+
+让我们想象一下，你已经完全实现了打乒乓球游戏的代码，你通过一个循环来运行这个游戏，你有两个片段的代码（通常，通过`if`或者`switch`语句来进行分支）来分别代表两个玩家。
 
 Your code works fine, and your game runs like a ping-pong champ!
 
+你的代码运行良好，并且你的游戏就像真是玩耍乒乓球一样！
+
 But what did I observe above about why CSP is useful? **Separation of concerns/capabilities.** What are our separate capabilities in the ping-pong game? *The two players!*
+
+但是还记得为什么我说 CSP 模式是如此有用呢？它完成了**关注点和功能模块的分离**。在上面的乒乓球游戏中我们怎么分离的功能点呢？就是这两位玩家！
 
 So, we could, at a very high level, model our game with two "processes" (generators), one for each *player*. As we get into the details of it, we will realize that the "glue code" that's shuffling control between the two players is a task in and of itself, and *this* code could be in a third generator, which we could model as the game *referee*（裁判员）.
 
+因此，我们可以在一个比较高的层次上，通过两个「进程」（generator 函数）来对我们的游戏建模，每个进程代表一位玩家，我们还需要关注一些细节问题，我们很快就感觉到还需要一些「胶水代码」来在两位玩家之间进行控制权的分配（交换），这些代码可以作为第三个 generator 函数进程，我们可以称之为裁判员。
+
 We're gonna skip over all kinds of domain-specific questions, like scoring, game mechanics, physics, game strategy, AI, controls, etc. The only part we care about here is really just simulating the back-and-forth pinging (which is actually our metaphor（暗喻、隐喻） for CSP control-transfer).
+
+我们已经消除了所有可能会遇到的与专业领域相关的问题，比如得分，游戏机制，物理学常识，游戏策略，电脑玩家，控制等。在我们的用例中我们只关心模拟玩耍乒乓球的反复往复的过程，（这一过程也正隐喻了 CSP 模式中的转移控制权）。
 
 **Wanna see the demo? Run it now** (note: use a very recent nightly of FF or Chrome, with ES6 JavaScript support, to see generators work)
 
+想要亲自尝试下演示用例？那就运行把（注意：使用最新每夜版 FF 或者 Chrome，并且带有支持 ES6，来看看 generators 如何工作）
+
 Now, let's look at the code piece by piece.
 
+现在，让我们来一段一段的阅读代码。
+
 First, what does the *asynquence* sequence look like?
+
+首先，asynquence 序列长什么样呢？
 
 ```javascript
 ASQ(
@@ -311,11 +329,19 @@ ASQ(
 
 We set up our sequence with two initial messages: `["ping","pong"]` and `{ hits: 0 }`. We'll get to those in a moment.
 
+我们给我们的序列设置了两个初始值`["ping", "pong"]`和`{hits: 0}`。我们将在后面讨论它们。
+
 Then, we set up a CSP run of 3 processes (coroutines): the `*referee()` and two `*player()` instances.
+
+接下来，我们设置 CSP 运行 3 个进程（协作程序）：`*referee()` 和 两个`*player()`实例。
 
 The final message at the end of the game is passed along to the next step in our sequence, which we then output as a message *from the referee*.
 
+游戏最后的消息传递给了我们序列的第二步，我们将在序列第二步中输出裁判传递的消息。
+
 The implementation of the referee:
+
+裁判进程的代码实现：
 
 ```javascript
 function *referee(table){
