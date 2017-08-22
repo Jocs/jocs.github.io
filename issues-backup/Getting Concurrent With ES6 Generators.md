@@ -1,11 +1,13 @@
 ### ES6 Generators: Complete Series
 
+####ES6 Generators: 完整系列
+
 1. [The Basics Of ES6 Generators](https://davidwalsh.name/es6-generators)
 2. [Diving Deeper With ES6 Generators](https://davidwalsh.name/es6-generators-dive)
 3. [Going Async With ES6 Generators](https://davidwalsh.name/async-generators)
 4. [Getting Concurrent With ES6 Generators](https://davidwalsh.name/concurrent-generators)
 
-If you've read and digested [part 1](https://davidwalsh.name/es6-generators/), [part 2](https://davidwalsh.name/es6-generators-dive/), and [part 3](https://davidwalsh.name/async-generators/) of this blog post series, you're probably feeling pretty confident with ES6 generators at this point. Hopefully you're inspired to really push the envelope and see what you can do with them.
+If you've read and digested [part 1](https://davidwalsh.name/es6-generators/), [part 2](https://davidwalsh.name/es6-generators-dive/), and [part 3](https://davidwalsh.name/async-generators/) of this blog post series, you're probably feeling pretty confident with ES6 generators at this point. Hopefully you're inspired to really push the envelope(挑战极限) and see what you can do with them.
 
 如果你已经阅读并消化了本系列的前三篇文章：[第一篇](https://davidwalsh.name/es6-generators/)、[第二篇](https://davidwalsh.name/es6-generators-dive/)、[第三篇](https://davidwalsh.name/async-generators/)，那么在此时你已经对如何使用ES6 generator函数胸有成竹，并且我也衷心希望你能够受到前三篇文章的鼓舞，实际去使用一下generator函数（挑战极限），探究其究竟能够帮助我们完成什么样的工作。
 
@@ -89,9 +91,9 @@ Finally, "communicating". What's that all about? It flows from the above -- coop
 
 What goes over this communication channel? Whatever you need to send (numbers, strings, etc). In fact, you don't even need to actually send a message over the channel to communicate over the channel. "Communication" can be as simple as coordination -- like transferring control from one to another.
 
-Why transferring control? Primarily because JS is single-threaded and literally only one of them can be actively running at any given moment. The others then are in a running-paused state, which means they're in the middle of their tasks, but are just suspended, waiting to be resumed when necessary.
+Why transferring control? Primarily because JS is single-threaded and literally only one of them can be actively running at any given moment. The others then are in a running-paused state, which means they're in the middle of their tasks, but are just suspended（暂停的）, waiting to be resumed when necessary.
 
-It doesn't seem to be realistic that arbitrary independent "processes" could *magically*cooperate and communicate. The goal of loose coupling is admirable but impractical.
+It doesn't seem to be realistic that arbitrary independent "processes" could *magically*cooperate and communicate. The goal of loose coupling is admirable but impractical（不切实际的、不现实的）.
 
 Instead, it seems like any successful implementation of CSP is an intentional factorization of an existing, well-known set of logic for a problem domain, where each piece is designed specifically to work well with the other pieces.
 
@@ -111,7 +113,7 @@ Since I've been trying intensely to explore applying the CSP pattern of concurre
 
 I already had the [`runner(..)`](https://github.com/getify/asynquence/tree/master/contrib#runner-plugin) plugin utility which handles async running of generators (see ["Part 3: Going Async With Generators"](https://davidwalsh.name/async-generators/#rungenerator-library-utility)), so it occurred to me that it could be fairly easily extended to handle multiple generators at the same time [in a CSP-like fashion](https://github.com/getify/asynquence/tree/master/contrib#csp-style-concurrency).
 
-The first design question I tackled: how do you know which generator gets control *next*?
+The first design question I tackled（处理、解决）: how do you know which generator gets control *next*?
 
 It seemed overly cumbersome/clunky to have each one have some sort of *ID* that the others have to know about, so they can address their messages or control-transfer explicitly to another process. After various experiments, I settled on a simple round-robin scheduling approach. So if you pair three generators A, B, and C, A will get control first, then B takes over when A yields control, then C when B yields control, then A again, and so on.
 
@@ -206,9 +208,9 @@ Your code works fine, and your game runs like a ping-pong champ!
 
 But what did I observe above about why CSP is useful? **Separation of concerns/capabilities.** What are our separate capabilities in the ping-pong game? *The two players!*
 
-So, we could, at a very high level, model our game with two "processes" (generators), one for each *player*. As we get into the details of it, we will realize that the "glue code" that's shuffling control between the two players is a task in and of itself, and *this* code could be in a third generator, which we could model as the game *referee*.
+So, we could, at a very high level, model our game with two "processes" (generators), one for each *player*. As we get into the details of it, we will realize that the "glue code" that's shuffling control between the two players is a task in and of itself, and *this* code could be in a third generator, which we could model as the game *referee*（裁判员）.
 
-We're gonna skip over all kinds of domain-specific questions, like scoring, game mechanics, physics, game strategy, AI, controls, etc. The only part we care about here is really just simulating the back-and-forth pinging (which is actually our metaphor for CSP control-transfer).
+We're gonna skip over all kinds of domain-specific questions, like scoring, game mechanics, physics, game strategy, AI, controls, etc. The only part we care about here is really just simulating the back-and-forth pinging (which is actually our metaphor（暗喻、隐喻） for CSP control-transfer).
 
 **Wanna see the demo? Run it now** (note: use a very recent nightly of FF or Chrome, with ES6 JavaScript support, to see generators work)
 
@@ -304,7 +306,7 @@ That's it!
 
 ## State Machine: Generator Coroutines
 
-One last example: defining a [state machine](http://en.wikipedia.org/wiki/Finite-state_machine) as a set of generator coroutines that are driven by a simple helper.
+One last example: defining a [state machine](http://en.wikipedia.org/wiki/Finite-state_machine) as a set of generator coroutines（协同程序） that are driven by a simple helper.
 
 [Demo](http://jsbin.com/luron/1/edit?js,console) (note: use a very recent nightly of FF or Chrome, with ES6 JavaScript support, to see generators work)
 
@@ -420,4 +422,4 @@ There are a number of libraries that have more-or-less taken a fairly formal app
 
 The best part though is that *asynquence* CSP works inline [with the rest of](https://davidwalsh.name/asynquence-part-1) its [other async capabilities](https://davidwalsh.name/asynquence-part-2) (promises, generators, flow control, etc). That way, you get the best of all worlds, and you can use whichever tools are appropriate for the task at hand, all in one small lib.
 
-Now that we've explored generators in quite a bit of detail over these last four posts, my hope is that you're excited and inspired to explore how you can revolutionize your own async JS code! What will you build with generators?
+Now that we've explored generators in quite a bit of detail over these last four posts, my hope is that you're excited and inspired to explore how you can revolutionize（彻底革命） your own async JS code! What will you build with generators?
