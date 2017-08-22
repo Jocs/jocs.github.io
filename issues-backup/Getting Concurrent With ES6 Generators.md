@@ -439,7 +439,7 @@ First, let's define a helper for controlling our finite state handlers:
 首先让我们来定义一个工具函数，来帮助我们控制我们有限的状态：
 
 ```javascript
-function state(val,handler) {
+function state(val, handler) {
     // make a coroutine handler (wrapper) for this state
     return function*(token) {
         // state transition handler
@@ -471,11 +471,19 @@ function state(val,handler) {
 
 This `state(..)` helper utility creates a [delegating-generator](https://davidwalsh.name/es6-generators-dive#delegating-generators) wrapper for a specific state value, which automatically runs the state machine, and transfers control at each state transition.
 
+`state(..)` 工具函数为一个特殊的状态值创建了一个[generator 代理](https://davidwalsh.name/es6-generators-dive#delegating-generators)的上层封装，它将自动的运行状态机，并且在不同的状态转换下转移控制权。
+
 Purely by convention, I've decided the shared `token.messages[0]` slot will hold the current state of our state machine. That means you can seed the initial state by passing in a message from the previous sequence step. But if no such initial message is passed along, we simply default to the first defined state as our initial state. Also, by convention, the final terminal state is assumed to be `false`. That's easy to change as you see fit.
+
+按照惯例来说，我已经决定使用的`token.messages[0]`中的共享数据插槽来储存状态机的当前状态值，这也意味着你可以在序列的前一个步骤来对该状态值进行初始化，但是，如果没有传递该初始化状态，我们简单的在定义第一个状态是将该状态设置为初始状态。同时，按照惯例，最后终止的状态值设置为`false`。正如你认为合适，也很容易改变该状态。
 
 State values can be whatever sort of value you'd like: `number`s, `string`s, etc. As long as the value can be strict-tested for equality with a `===`, you can use it for your states.
 
+状态值可以是多种数据格式之一，数字，字符串等等，只要改数据可以通过严格的`===`来检测相等性，你就可以使用它来作为状态值。
+
 In the following example, I show a state machine that transitions between four `number` value states, in this particular order: `1 -> 4 -> 3 -> 2`. For demo purposes only, it also uses a counter so that it can perform the transition loop more than once. When our generator state machine finally reaches the terminal state (`false`), the *asynquence* sequence moves onto the next step, just as you'd expect.
+
+在接下来的例子中，我展示了一个拥有四个数组状态的状态机，并且其运行运行：`1 -> 4 -> 3 -> 2`。该顺序仅仅为了演示所需，我们使用了一个计数器来帮助我们在不同状态间能够多次传递，当我们的 generator 状态机最终遇到了终止状态`false`时，异步序列运行至下一个步骤，正如你所期待那样。
 
 ```javascript
 // counter (for demo purposes only)
@@ -534,9 +542,15 @@ ASQ( /* optional: initial state value */ )
 
 Should be fairly easy to trace what's going on here.
 
+上面代码的运行机制是不是非常简单。
+
 `yield ASQ.after(1000)` shows these generators can do any sort of promise/sequence based async work as necessary, as we've seen earlier. `yield transition(..)` is how we transition to a new state.
 
+`yield ASQ.after(1000)`表示这些 generator 函数可以进行 promise/sequence等异步工作，正如我们先前缩减，`yield transition(..)`告诉我们怎样将控制权传递给下一个状态。
+
 Our `state(..)` helper above actually does the *hard work* of handling the [`yield*`delegation](https://davidwalsh.name/es6-generators-dive#delegating-generators) and transition juggling, leaving our state handlers to be expressed in a very simple and natural fashion.
+
+我们的`state(..)`工具函数真实的完成了[yield *代理](https://davidwalsh.name/es6-generators-dive#delegating-generators)这一艰难的工作，像变戏法一样，使得我们能够以一种简单自然的形式来对状态进行操控。
 
 ## Summary
 
