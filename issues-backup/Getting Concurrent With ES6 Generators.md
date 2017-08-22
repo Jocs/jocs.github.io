@@ -141,29 +141,57 @@ You should definitely check out those great projects to see various approaches a
 
 ### asynquence's `runner(..)`: Designing CSP
 
+####asynquence 中的 `runner(..)` 方法：为 CSP 而设计
+
 Since I've been trying intensely to explore applying the CSP pattern of concurrency to my own JS code, it was a natural fit for me to extend my async flow-control lib [asynquence](http://github.com/getify/asynquence) with CSP capability.
+
+由于我强烈地想要在我的 JS 代码中运用 CSP 模式，很自然地想到了扩展我现有的异步控制流的库[asynquence](http://github.com/getify/asynquence) ，为其添加 CSP 处理能力。
 
 I already had the [`runner(..)`](https://github.com/getify/asynquence/tree/master/contrib#runner-plugin) plugin utility which handles async running of generators (see ["Part 3: Going Async With Generators"](https://davidwalsh.name/async-generators/#rungenerator-library-utility)), so it occurred to me that it could be fairly easily extended to handle multiple generators at the same time [in a CSP-like fashion](https://github.com/getify/asynquence/tree/master/contrib#csp-style-concurrency).
 
+我已经有了 [`runner(..)`](https://github.com/getify/asynquence/tree/master/contrib#runner-plugin)插件工具能够帮助我异步运行 generator 函数（参见[第三篇文章Going Async With Generators](https://davidwalsh.name/async-generators/#rungenerator-library-utility)），因此对于我来说，通过扩展该方法使得其具有像[CSP 形式](https://github.com/getify/asynquence/tree/master/contrib#csp-style-concurrency)一样处理多个 generator函数的能力变得相对容易很多。
+
 The first design question I tackled（处理、解决）: how do you know which generator gets control *next*?
 
-It seemed overly cumbersome/clunky to have each one have some sort of *ID* that the others have to know about, so they can address their messages or control-transfer explicitly to another process. After various experiments, I settled on a simple round-robin scheduling approach. So if you pair three generators A, B, and C, A will get control first, then B takes over when A yields control, then C when B yields control, then A again, and so on.
+首选我需要解决的设计问题：我怎样知道下一个处理哪个 generator 函数呢？
+
+It seemed overly cumbersome（累赘的）/clunky（沉重的） to have each one have some sort of *ID* that the others have to know about, so they can address their messages or control-transfer explicitly to another process. After various experiments, I settled on a simple round-robin scheduling(循环调度法) approach. So if you pair three generators A, B, and C, A will get control first, then B takes over when A yields control, then C when B yields control, then A again, and so on.
+
+如果我们在每个 generator 函数上面添加类似 ID一样的标示，这样别的 generator 函数就能够很容易分清楚彼此，并且能够准确的将消息或者控制权传递给其他进程，但是这种方法显得累赘且冗余。经过众多尝试后，我找到了一种简便的方法，称之为「循环调度法」。如果你要处理一组三个的 generator 函数 A, B, C，A 首先获得控制权，当 A 调用 yield 表达式将控制权移交给 B，再后来 B 通过 yield 表达式将控制权移交给 C，一个循环后，控制权又重新回到了 A generator 函数，如此往复。
 
 But how should we actually transfer control? Should there be an explicit API for it? Again, after many experiments, I settled on a more implicit approach, which seems to (completely accidentally) be similar to how [Koa does it](http://koajs.com/#cascading): each generator gets a reference to a shared "token" -- `yield`ing it will signal control-transfer.
 
+但是我们究竟如何转移控制权呢？是否需要一个明确的 API 来处理它呢？再次，经过众多尝试后，我找到了一个更加明确的途径，该方法和[Koa 处理有些类似](http://koajs.com/#cascading)（完全是巧合）：每一个 generator 对同一个共享的「token」具有引用，`yield`表达式的作用仅仅是转移控制权。
+
 Another issue is what the message channel should *look* like. On one end of the spectrum you have a pretty formalized communication API like that in core.async and js-csp (`put(..)` and `take(..)`). After my own experiments, I leaned toward the other end of the spectrum, where a much less formal approach (not even an API, just a shared data structure like an `array`) seemed appropriate and sufficient.
 
-I decided on having an array (called `messages`) that you can arbitrarily decide how you want to fill/drain as necessary. You can `push()` messages onto the array, `pop()`messages off the array, designate by convention specific slots in the array for different messages, stuff more complex data structures in these slots, etc.
+另外一个问题，消息渠道究竟应该采取什么样的形式呢。一端的频谱就是你将看到和 core.async 和 js-csp(`put(..`和`take(..)`)相似的 API 设计。经过我的尝试后，我倾向于频谱的另一端，你将看到一个不那么正式的途径（甚至不是一个 API，仅仅是共享一个像`array`一样的数据结构），但是它又是那么的合适且有效。
 
-My suspicion is that some tasks will need really simple message passing, and some will be much more complex, so rather than forcing complexity on the simple cases, I chose not to formalize the message channel beyond it being an `array` (and thus no API except that of `array`s themselves). It's easy to layer on additional formalism to the message passing mechanism in the cases where you'll find it useful (see the *state machine* example below).
+I decided on having an array (called `messages`) that you can arbitrarily decide how you want to fill/drain as necessary. You can `push()` messages onto the array, `pop()`messages off the array, designate（指派指定） by convention（约定惯例） specific slots插槽 in the array for different messages, stuff more complex data structures in these slots, etc.
+
+我决定使用一个数组（称作`messages`）来作为消息渠道，你可以采取任意必要的数组方法来填充/消耗数组。你可以使用`push()`方法来想数组中推入消息，你也可以使用`pop()`方法来将消息从数组中推出，你也可以按照一些约定惯例想数组中插入不同的消息，这些消息也许是更加复杂的数据接口，等等。
+
+My suspicion（疑虑） is that some tasks will need really simple message passing, and some will be much more complex, so rather than forcing complexity on the simple cases, I chose not to formalize the message channel beyond it being an `array` (and thus no API except that of `array`s themselves). It's easy to layer on additional formalism to the message passing mechanism in the cases where you'll find it useful (see the *state machine* example below).
+
+我的疑虑是一些任务需要相当简单的消息来传递，而另外一些任务（消息）却更加复杂，因此我没有在这简单的例子上面花费过多的精力，而是选择了不去对 message 渠道进行格式化，它就是简简单单的一个数组。（因此也就没有为`array`本身设计特殊的 API）。同时，在你觉得格式化消息渠道有用的时候，你也可以很容易的为该消息传递机制添加格外的格式化（参见下面的状态机的事例）。
 
 Finally, I observed that these generator "processes" still benefit from the [async capabilities that stand-alone generators](https://davidwalsh.name/async-generators/) can use. In other words, if instead of `yield`ing out the control-token, you `yield` out a Promise (or *asynquence* sequence), the `runner(..)` mechanism will indeed pause to wait for that future value, but will **not transfer control** -- instead, it will return the result value back to the current process (generator) so it retains control.
 
-That last point might be (if I interpret things correctly) the most controversial or unlike the other libraries in this space. It seems that true CSP kind of turns its nose at such approaches. However, I'm finding having that option at my disposal to be very, very useful.
+最后，我发现这些 generator 函数「进程」依然受益于[单独的 generator 函数的异步能力](https://davidwalsh.name/async-generators/)。换句话说，如果你通过 yield 表达式不是传递的一个「control-token」，你通过 yield 表达式传递的一个 Promise （或者异步序列），`runner(..)`的运行机制会暂停并等待返回值，并且不会**转移控制权**。他会将该返回值传递会当前进程（generator 函数）并保持该控制权。
+
+That last point might be (if I interpret（解释） things correctly) the most controversial（有争议的） or unlike the other libraries in this space. It seems that true CSP kind of turns its nose at such approaches. However, I'm finding having that option at my disposal（处理） to be very, very useful.
+
+上面最后一点（如果我说明得正确的话）是和其他库最具争议的地方，从其他库看来，真是的 CSP 模式在 yield 表达式执行后移交控制权，然而，我发现在我的库中我这样处理却相当有用。（译者注：作者就是这样自信）
+
+
 
 ## A Silly FooBar Example
 
+####一个简单的 FooBar 例子
+
 Enough theory. Let's just dive into some code:
+
+我们已经理论充足了，让我们看一些代码：
 
 ```javascript
 // Note: omitting fictional `multBy20(..)` and
@@ -201,11 +229,19 @@ function *bar(token) {
 
 OK, so there's our two generator "processes", `*foo()` and `*bar()`. You'll notice both of them are handed the `token` object (you could call it whatever you want, of course). The `messages` property on the `token` is our shared message channel. It starts out filled with the message(s) passed to it from the initialization of our CSP run (see below).
 
+OK，上面出现了两个 generator「进程」，`*foo()` 和 `*bar()`。你会发现这两个进程都将操作`token`对象（当然，你可以以你喜欢的方式称呼它）。`token`对象上的`messages`属性值就是我们的共享的消息渠道。我们可以在 CSP 初始化运行的时候给它添加一些初始值。
+
 `yield token` explicitly transfers control to the "next" generator (round-robin order). However, `yield multBy20(value)` and `yield addTo2(value)` are both yielding promises (from these fictional delayed-math functions), which means that the generator is paused at that moment until the promise completes. Upon promise resolution, the currently-in-control generator picks back up and keeps going.
+
+`yield token`明确的将控制权转一个「下一个」generator 函数（循环调度法）。然后`yield multBy20(value)`和`yield addTo2(value)`两个表达式都是传递的 promises（从上面虚构的延迟数学计算方法），这也意味着，generator 函数将在该处暂停知道 promise 完成。当 promise 被解决后（fulfill 或者 reject），当前掌管控制权的 generator 函数重新启动继续执行。
 
 Whatever the final `yield`ed value is, in this case the `yield "meaning of...`expression statement, that's the completion message of our CSP run (see below).
 
+无论最终的 yield的值是什么，在我们的例子中`yield "meaning of..."`表达式的值，将是我们 CSP 执行的最终返回数据。
+
 Now that we have our two CSP process generators, how do we run them? Using *asynquence*:
+
+现在我们两个 CSP 模式的 generator 进程，我们怎么运行他们呢？当然是使用 asynquence：
 
 ```javascript
 // start out a sequence with the initial message value of `2`
@@ -226,11 +262,19 @@ ASQ( 2 )
 
 Obviously, this is a trivial example. But I think it illustrates the concepts pretty well.
 
+很明显，上面仅是一个无关紧要的例子，但是其也能足以很好的表达 CSP 的概念了。
+
 Now might be a good time to [go try it yourself](http://jsbin.com/tunec/2/edit?js,console) (try changing the values around!) to make sure these concepts make sense and that you can code it up yourself!
+
+现在是时候去尝试一下上面的[例子](http://jsbin.com/tunec/2/edit?js,console)（尝试着修改下值）来搞明白这一概念的含义，进而能够编写自己的 CSP 模式代码。
 
 ## Another Toy Demo Example
 
+####另外一个「玩具」用例
+
 Let's now examine one of the classic CSP examples, but let's come at it from the simple observations I've made thus far, rather than from the academic-purist perspective it's usually derived from.
+
+如果那我们来看看最为经典的 CSP 例子，
 
 **Ping-pong**. What a fun game, huh!? It's my favorite *sport*.
 
@@ -337,6 +381,8 @@ That's it!
 [Take a look at the demo's code](http://jsbin.com/qutabu/1/edit?js,output) to get a complete in-context code listing to see all the pieces working together.
 
 ## State Machine: Generator Coroutines
+
+####状态机：Generator 协同程序
 
 One last example: defining a [state machine](http://en.wikipedia.org/wiki/Finite-state_machine) as a set of generator coroutines（协同程序） that are driven by a simple helper.
 
