@@ -4,6 +4,10 @@
 
 **2017年**
 
+2017年8月 [ES6 Generator函数实现协同程序](https://github.com/Jocs/jocs.github.io/issues/12)
+
+2017年8月 [通过ES6 Generator函数实现异步操作](https://github.com/Jocs/jocs.github.io/issues/11)
+
 2017年8月 [网络请求问题指南](https://github.com/Jocs/jocs.github.io/issues/10)
 
 2017年8月 [深入理解 Generators函数](https://github.com/Jocs/jocs.github.io/issues/9)
