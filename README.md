@@ -4,6 +4,8 @@
 
 **2017年**
 
+2017年9月[聊聊 Git 改变历史记录](https://github.com/Jocs/jocs.github.io/issues/13)
+
 2017年8月 [ES6 Generator函数实现协同程序](https://github.com/Jocs/jocs.github.io/issues/12)
 
 2017年8月 [通过ES6 Generator函数实现异步操作](https://github.com/Jocs/jocs.github.io/issues/11)
