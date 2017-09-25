@@ -323,7 +323,7 @@ add 标题：登鹳雀楼 作者：王焕之
 
 **思考2：**假如通过 rebase 合并了多个 commits 后，发现并不是我们想要的结果，怎么使用 git reset 将其恢复到合并前状态？
 
-**思考3：** 在上面的例子中，由于 git rebase -i 不能够直接编辑最初的提交记录，因而使用了 `--root` 选项，那么有没有什么方法可以在最初的 commit 之前添加一个 root commit 呢？这样 git rebase -i 就可以直接使用了。
+**思考3：** 在上面的例子中，由于 git rebase -i 不能够直接编辑最初的提交记录，因而使用了 `--root` 选项，那么有没有什么[方法](https://stackoverflow.com/questions/645450/insert-a-commit-before-the-root-commit-in-git)可以在最初的 commit 之前添加一个 root commit 呢？这样 git rebase -i 就可以直接使用了。
 
 ## 将其他分支的某个提交附加到当前分支
 
