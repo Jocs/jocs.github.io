@@ -2,7 +2,7 @@
 
 > 非常感谢你为 [mint-ui](https://github.com/ElemeFE/mint-ui) 修复了这个 issue。不过你的 commit 信息能修改成如下格式吗？「issue 666: Any message about this issue」。
 >
-> 当我兴高采烈向 [Element](https://github.com/ElemeFE/element) 提交 PR 的时候，维护者告诉我你能把你多个 commits 合成一个 commit 吗？我们需要保持提交历史清晰明了。
+> 当我兴高采烈向 [Element](https://github.com/ElemeFE/element) 提交 PR 的时候，维护者告诉我你能把你多个 commits 合并成一个 commit 吗？我们需要保持提交历史清晰明了。
 >
 > 修复了一个线上 master 分支的Bug，发现这个 Bug 在当前 dev 分支也是存在的，怎么将master分支上的 bugfix 的 commit 移植到 dev 分支呢？
 
@@ -12,7 +12,7 @@
 
 在我们开发的过程中，我们经常会遇到这样的问题，当我们进行了一次「冲动」的 Git 提交后。发现我们的 commit 信息有误，或者我们把不应该这次提交的文件添加到了此次提交中，或者有的文件忘记提交了，怎么办？这些问题都可以通过如下命令来进行弥补。
 
-> Git commit --amend 
+> git commit --amend 
 
 举个例子，在一个刚初始化的 Git 仓库中，有如下两个文件：
 
@@ -46,7 +46,7 @@ Date:   Tue Sep 19 16:49:57 2017 +0800
 ```Shell
 # 首先，需要将 should-commit.js 文件添加到暂存区
 git add should-commit.js
-# 其次，将 should-not-commit.js 文件从已暂存状态转为未暂存状态
+# 其次，将 should-not-commit.js 文件从已暂存状态转为未暂存状态，不会删除 should-not-commit.js 文件。
 git rm --cache should-not-commit.js
 # 最后，通过git commit --amend 修改提交信息
 git commit--amend
@@ -66,56 +66,141 @@ Date:   Tue Sep 19 16:49:57 2017 +0800
 
 **思考1：**怎么使用 git reset 命令修改最后一次提交记录？
 
-## 多个提交合并成一个提交
+## 多个提交合并、排序、删除操作
 
-在一个大型项目中，为了保持提交历史的简洁和可逆，往往一个功能点或者一个 bug fix 对应一个提交，但是在我们实际开发的过程中，我们并不是完成整个功能才进行一次提交的，往往是开发了功能点的一部分，就需要给小伙伴们进行 code review，小的 commit 保证了 code review 的效率和准确性，想象一下如果一次给小伙伴 review 上千行代码，几十个文件，他一定会疯掉的。同时 code review 后的反馈，我们可能需要修改代码，然后再次提交。但是这些提交之间的反复修改不应该体现在最终的 PR 上面，因此，我们需要将多个 commit 合并成一个 commit 后提 PR。
+在一个大型项目中，为了保持提交历史的简洁和可逆，往往一个功能点或者一个 bug fix 对应一个提交，但是在我们实际开发的过程中，我们并不是完成整个功能才进行一次提交的，往往是开发了功能点的一部分，就需要给小伙伴们进行 code review，小的 commit 保证了 code review 的效率和准确性，想象一下如果一次给小伙伴 review 上千行代码，几十个文件，他一定会疯掉的。同时 code review 后的反馈，我们可能需要修改代码，然后再次提交。但是这些提交之间的反复修改不应该体现在最终的 PR 上面，因此， 我们需要根据功能点的前后对 commit 进行排序，对相同功能的commits 进行合并，并删除一些不需要的 commit，根据最终的提交历史提 PR。
 
-举个例子，我要开发一个新功能，「设置 header 元素字体大小为 18px。」（好吧，姑且算是一个功能），当我写完代码提交后，打包电脑，准备回家之前，把页面效果给产品经理看，产品经理皱了皱眉头，说道「字体有点小啊，要不你设置成 24px 看看？」
+举个例子，将王之涣的**登鹳雀楼**摘抄到我的读书笔记中。
 
-通过 git log --oneline 看看现在的提交记录。
+首先创建 poem 文件，将「黄河入海流」这句诗添加到了文件中，创建第一个 commit 如下：
 
-```Shell
-# 第一次我的提交如下
-4aef53f (HEAD -> master) set font-size: 18px
-```
-
-好吧，我修改了字体大小为 24px 又进行了一次提交。
+通过 git log --oneline 命令来看看提交记录。
 
 ```shell
-# 第二次修改后的提交记录如下
-fc10336 (HEAD -> master) reset fontsize: 24px
-4aef53f set font-size: 18px
+da5ee49 (HEAD -> master) add 黄河入海流
 ```
 
-心想，这次产品经理总该满意了吧，再次给产品经理看看效果，产品经理面带疑虑，「呀，这是 24px 吗？我怎么感觉字体有点大了，而且都换行了，要不你再设置成 20px 看看？」
-
-我再次修改，字体大小为 20px，再次提交。
+ 后来觉得，摘抄一句有些单调，不如将其前面一句也摘抄到笔记中吧，于是又出现了第二个 commit 如下：
 
 ```shell
-75e3374 (HEAD -> master) set font-size: 20px, once more
-fc10336 reset fontsize: 24px
-4aef53f set font-size: 18px
+622c3c8 (HEAD -> master) add 百日依山尽
+da5ee49 add 黄河入海流
 ```
 
-当产品经理看到第三次修改后的效果时，终于露出了满意的笑容。我心想，我可不能把这些反复的历史提交记录留在最终版本库中，是时候再次「改变历史」记录了。
+...
+
+觉得自己太随性，摘抄一首诗竟然添加了如此之多的 commits，commits 如下：
+
+```shell
+953aabb (HEAD -> master) add 文章出处
+7fad941 add 摘抄时间
+731d00b add 作者：王焕之
+9a22044 add 标题：登鹳雀楼
+4fee22a add 更上一层楼
+d1293c5 add 欲穷千里目
+622c3c8 add 百日依山尽
+da5ee49 add 黄河入海流
+```
+
+再看看上面的提交历史，觉得如此多的 commits 确实有些冗余了，commits 的顺序似乎也有些问题，因为 commits 的顺序并不是按照正常摘抄一首诗的顺序来组织的。而且觉得添加摘抄时间有些多余了，git 的历史提交记录就已经帮我记录了添加时间。
+
+让我们来一步一步通过「重写历史」来修改上面的问题。
 
 这次我使用的命令是 git rebase -i 或者 git rebase - -interactive， Git 官方文档对其如下解释：
 
 > Make a list of the commits which are about to be rebased. Let the user edit that list before rebasing. This mode can also be used to split commits 
 
-可以看出，该命令罗列了将要 rebase 的提交记录，打开 Git 设置的编辑器，让用户有更多的选择，可以进行 commit 合并，对 commits 重新排序，修改 commit 信息等。
+可以看出，该命令罗列了将要 rebase 的提交记录，打开 Git 设置的编辑器，让用户有更多的选择，可以进行 commit 合并，对 commits 重新排序，删除 commit 等。
 
-在上面的例子中，我想要合并 master 分支最近的三个 commits，并修改提交信息，使用如下命令：
+**第一步：删除「add 摘抄时间」commit**
 
-> Git rebase -i master~2
+运行命令
 
-出来如下对话信息：
+> git rebase -i HEAD~2
+
+Git 打开默认编辑器，出来如下对话信息：
+
+```Shell
+pick 7fad941 add 摘抄时间
+pick 953aabb add 文章出处
+
+# Rebase 731d00b..953aabb onto 731d00b (2 commands)
+#
+# Commands:
+# p, pick = use commit
+# r, reword = use commit, but edit the commit message
+# e, edit = use commit, but stop for amending
+# s, squash = use commit, but meld into previous commit
+# f, fixup = like "squash", but discard this commit's log message
+# x, exec = run command (the rest of the line) using shell
+# d, drop = remove commit
+```
+
+上面的对话信息中包含七条可选命令，很明显最后一条 d，drop 正式我需要的，因为我正打算删除 commit。于是我把第一行中的 pick 命令改为了 drop 命令。
 
 ```shell
-pick fc10336 reset fontsize: 24px
-pick 75e3374 set font-size: 20px, once more
+drop 7fad941 add 摘抄时间
+pick 953aabb add 文章出处
+```
 
-# Rebase 4aef53f..75e3374 onto 4aef53f (2 commands)
+保存并推出编辑器。
+
+```shell
+Auto-merging poem
+CONFLICT (content): Merge conflict in poem
+error: could not apply 953aabb... add 文章出处
+
+When you have resolved this problem, run "git rebase --continue".
+If you prefer to skip this patch, run "git rebase --skip" instead.
+To check out the original branch and stop rebasing, run "git rebase --abort".
+
+Could not apply 953aabb... add 文章出处
+```
+
+OMG!竟然竟然提示 poem 文件中有冲突！打开 poem 文件，手动删除不需要的内容及冲突的标记符号，按照上面的提示，运行 git rebase --continue 命令。心想，这下总该好了吧！
+
+```shell
+poem: needs merge
+You must edit all merge conflicts and then
+mark them as resolved using git add
+```
+
+rebase 依然没有成功，原来忘记将解决冲突的修改添加到暂存区了，通过运行 git add 命令后，再次执行 git rebase —continue。
+
+出来一个对话框，提示我可以修改 commit 信息，没有修改，直接保存退出。来看看此时的提交历史记录。
+
+```shell
+b8f0233 (HEAD -> master) add 文章出处
+731d00b add 作者：王焕之
+9a22044 add 标题：登鹳雀楼
+4fee22a add 更上一层楼
+d1293c5 add 欲穷千里目
+622c3c8 add 百日依山尽
+da5ee49 add 黄河入海流
+```
+
+和之前的 commits log 信息进行对比，发现 `7fad941 add 摘抄时间` 提交，已经被我成功得删除了，虽然期间有些波折。同时我还注意到了，「add 文章出处」的 SHA1的 hash 值也从 953aabb 变成了 b8f0233。说明，该 commit 是新创建的 commit。
+
+**第二步：调整 commits 顺序**
+
+看着上面提交历史记录总会有些别扭，因为不是安装诗本身的顺序来进行提交的，现在我需要修改提交的顺序。好吧，又该是 git rebase -i 命令大显身手的时候到了。
+
+但是现在有个问题，git rebase -i 命令并不能够编辑最初的提交。不巧的是，我正需要改变第一个 commit 的顺序，这儿需要一点小技巧，用到  `--root` 选项，通过该选项，我们就能够编辑初始化的提交了。运行命令如下：
+
+> git rebase -i —root
+
+Git 再次打开编辑器，提示如下对话信息：
+
+```shell
+pick da5ee49 add 黄河入海流
+pick 622c3c8 add 百日依山尽
+pick d1293c5 add 欲穷千里目
+pick 4fee22a add 更上一层楼
+pick 9a22044 add 标题：登鹳雀楼
+pick 731d00b add 作者：王焕之
+pick b8f0233 add 文章出处
+
+# Rebase b8f0233 onto a69da76 (7 commands)
 #
 # Commands:
 # p, pick = use commit
@@ -128,43 +213,117 @@ pick 75e3374 set font-size: 20px, once more
 # ...
 ```
 
-有上面的对话信息我们可以看到，有七个命令可选，而当前的默认选择为 pick，也就是说使用当前提交，而我的目的是合并最近三个 commit，因此我选择 s，squash 命令，该命令会将当前 commit 合并到它前一个 commit 中，修改最上面两行代码如下：
+修改上面的提交顺序如下：
 
-```shell
-s fc10336 reset fontsize: 24px
-s 75e3374 set font-size: 20px, once more
+```
+pick 622c3c8 add 百日依山尽
+pick da5ee49 add 黄河入海流
+pick d1293c5 add 欲穷千里目
+pick 4fee22a add 更上一层楼
+pick 9a22044 add 标题：登鹳雀楼
+pick 731d00b add 作者：王焕之
+pick b8f0233 add 文章出处
+...
 ```
 
-然后保存并推出编辑器，啊哈，Git 又帮我打开了如下对话，告诉我，这是三次 commit 的合并，你可以修改你的提交信息。好吧，我把第二次和第三次的提交信息通过「#」符号注释掉，然后将第一次的提交信息修改为最终的功能描述信息「set font-size: 20px」。保存并退出。
+然后保存并推出编辑器。
+
+不出意外，依然存在冲突，解决冲突，运行 git add . 和 git rebase —continue。最后来看看现在的历史提交记录：
 
 ```shell
-# This is a combination of 3 commits.
-# This is the 1st commit message:
+ddb6576 (HEAD -> master) add 文章出处
+a6e40b3 add 作者：王焕之
+ce83346 add 标题：登鹳雀楼
+cae4916 add 更上一层楼
+f79b9ac add 欲穷千里目
+fb65570 add 黄河入海流
+8e25185 add 白日依山尽
+```
 
-set font-size: 20px
+**第三步：合并 commits**
 
-# This is the commit message #2:
+添加标题和添加作者貌似应该放到一个 commit 里面，也就是说，我需要将`a6e40b3 add 作者：王焕之` 提交和 `ce83346 add 标题：登鹳雀楼` 合并成一个提交。这样显得提交更加简洁明晰。
 
-# reset fontsize: 24px
+依然使用命令 
 
-# This is the commit message #3:
+> git rebase -i HEAD~3
 
-# set font-size: 20px, once more
+Git 大概如下对话框：
 
-# Please enter the commit message for your changes. Lines starting
-# with '#' will be ignored, and an empty message aborts the commit.
+```shell
+pick ce83346 add 标题：登鹳雀楼
+pick a6e40b3 add 作者：王焕之
+pick ddb6576 add 文章出处
+
+# Rebase cae4916..ddb6576 onto cae4916 (3 commands)
+#
+# Commands:
+# p, pick = use commit
+# r, reword = use commit, but edit the commit message
+# e, edit = use commit, but stop for amending
+# s, squash = use commit, but meld into previous commit
+# f, fixup = like "squash", but discard this commit's log message
+# x, exec = run command (the rest of the line) using shell
+# d, drop = remove commit
 # ...
 ```
 
-再来看看当前的提交历史，啊哈！又一次成功改变历史。
+这次我使用的命令是 s, squash。该命令用于合并两个或多个 commits，会将选择的 commit 合并到前一个 commt 中。修改上面对话第二行如下：
 
 ```shell
-8e198ec (HEAD -> master) set font-size: 20px
+pick ce83346 add 标题：登鹳雀楼
+squash a6e40b3 add 作者：王焕之
+pick ddb6576 add 文章出处
 ```
 
-**思考2：**假如我又不想合并三个 commits 了，怎么使用 git reset 将其恢复到合并前状态？
+然后保存并推出编辑器，啊哈，Git 似乎有点疑惑，它并不知道选择哪个 commit 信息作为合并的最终 commit 信息，于是 Git 打开了新的对话框，让我自己输入新的合并提交信息。
 
-**思考3：**在「重写最后一次提交」部分，使用 git commit --amend 可以修改最后一次提交记录，那么用 git rebase -i 怎么去重写历史提交中的任意一条提交信息呢？
+```Shell
+# This is a combination of 2 commits.
+# This is the 1st commit message:
+
+add 标题：登鹳雀楼
+
+# This is the commit message #2:
+
+add 作者：王焕之
+
+# ...
+```
+
+修改如下：
+
+```shell
+# This is a combination of 2 commits.
+# This is the 1st commit message:
+
+add 标题：登鹳雀楼 作者：王焕之
+
+# This is the commit message #2:
+
+# add 作者：王焕之
+
+# ...
+```
+
+保存上面的修改，并推出编辑器。
+
+再来看看最后的历史提交记录
+
+```shell
+* b907e51 - (2 hours ago) add 文章出处 - ran.luo (HEAD -> master)
+* bd0bfed - (3 hours ago) add 标题：登鹳雀楼 作者：王焕之 - ran.luo
+* cae4916 - (3 hours ago) add 更上一层楼 - ran.luo
+* f79b9ac - (3 hours ago) add 欲穷千里目 - ran.luo
+* fb65570 - (3 hours ago) add 黄河入海流 - ran.luo
+* 8e25185 - (3 hours ago) add 白日依山尽 - ran.luo
+```
+
+啊哈，该历史提交记录终于是我想要的了。
+
+**思考2：**假如通过 rebase 合并了多个 commits 后，发现并不是我们想要的结果，怎么使用 git reset 将其恢复到合并前状态？
+
+**思考3：** 在上面的例子中，由于 git rebase -i 不能够直接编辑最初的提交记录，因而使用了 `--root` 选项，那么有没有什么方法可以在最初的 commit 之前添加一个 root commit 呢？这样 git rebase -i 就可以直接使用了。
 
 ## 将其他分支的某个提交附加到当前分支
 
