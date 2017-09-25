@@ -228,7 +228,7 @@ pick b8f0233 add 文章出处
 
 然后保存并推出编辑器。
 
-不出意外，依然存在冲突，解决冲突，运行 git add . 和 git rebase —continue。最后来看看现在的历史提交记录：
+OMG，依然存在冲突，解决冲突，运行 git add . 和 git rebase —continue。最后来看看现在的历史提交记录：
 
 ```shell
 ddb6576 (HEAD -> master) add 文章出处
