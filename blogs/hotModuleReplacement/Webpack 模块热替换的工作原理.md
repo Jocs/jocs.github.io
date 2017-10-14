@@ -1,5 +1,3 @@
-
-
 ### Webpack Hot Module Replacement 的原理解析
 
 Hot Module Replacement（以下简称 HMR）是 Webpack 在 2013 年引入的最令人兴奋的特性之一 ，当你对代码进行修改并保存后，Webpack 将对代码重新打包，并将新的模块发送到浏览器端，浏览器通过新的模块替换老的模块，这样在不刷新浏览器的前提下就能够对应用进行更新。例如，在开发 Web 页面过程中，当你点击按钮，出现一个弹窗的时候，发现弹窗标题没有对齐，这时候你修改 CSS 样式，然后保存，在浏览器没有刷新的前提下，标题样式发生了改变。感觉就像直接在 Chrome 的开发者工具中直接修改元素样式一样。
@@ -12,15 +10,15 @@ Hot Module Replacement（以下简称 HMR）是 Webpack 在 2013 年引入的最
 
 * live reload 工具并不能够保存应用的状态（states），当刷新页面后，应用之前状态丢失，还是上文中的例子，点击按钮出现弹窗，当浏览器刷新后，弹窗也随即消失，要恢复到之前状态，还需再次点击按钮。而 Webapck HMR 则不会刷新浏览器，而是运行时对模块进行热替换，保证了应用状态不会丢失，提升了开发效率。
 * 在古老的开发流程中，我们可能需要手动运行命令对代码进行打包，并且打包后再手动刷新浏览器页面，而这一系列重复的工作都可以通过 HMR 工作流来自动化完成，让更多的精力投入到业务中，而不是把时间浪费在重复的工作上。
-* HMR 兼容市面上大多前端框架，比如[React Hot Loader](https://github.com/gaearon/react-hot-loader)，[Vue-loader](https://github.com/vuejs/vue-loader)，能够监听组件的变化，实时将最新的组件更新到浏览器端。[Elm Hot Loader](https://github.com/fluxxu/elm-hot-loader) 支持通过 webpack 对Elm 语言代码进行转译并打包，当然它也实现了 HMR 功能。
+* HMR 兼容市面上大多前端框架或库，比如[React Hot Loader](https://github.com/gaearon/react-hot-loader)，[Vue-loader](https://github.com/vuejs/vue-loader)，能够监听 React 或者 Vue 组件的变化，实时将最新的组件更新到浏览器端。[Elm Hot Loader](https://github.com/fluxxu/elm-hot-loader) 支持通过 webpack 对 Elm 语言代码进行转译并打包，当然它也实现了 HMR 功能。
 
 #### HMR 的工作原理图解
 
 初识 HMR 的时候觉得其很神奇，一直有一些疑问萦绕在脑海。
 
-1. webpack 可以将不同的模块打包成 bundle 文件或者几个 chunk 文件，但是当我通过 webpack HMR 进行开发的过程中，我并没有在我的 dist 目录中找到 webpack 打包好的文件？
-2. 通过查看 [webpack-dev-server](https://github.com/webpack/webpack-dev-server) 的 package.json 文件，我们知道其依赖于[webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware)  库，那么 webpack-dev-middleware 在 HMR 过程中扮演什么角色？
-3. 使用 HMR 的过程中，通过 Chrome 开发者工具我知道浏览器是通过 websocket 和 webpack-dev-server 进行通信的，但是 websocket 的 message 中并没有发现新模块代码。打包后的新模块又是怎样发送到浏览器端的呢？
+1. webpack 可以将不同的模块打包成 bundle 文件或者几个 chunk 文件，但是当我通过 webpack HMR 进行开发的过程中，我并没有在我的 dist 目录中找到 webpack 打包好的文件，它们去哪呢？
+2. 通过查看 [webpack-dev-server](https://github.com/webpack/webpack-dev-server) 的 package.json 文件，我们知道其依赖于 [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware)  库，那么 webpack-dev-middleware 在 HMR 过程中扮演什么角色？
+3. 使用 HMR 的过程中，通过 Chrome 开发者工具我知道浏览器是通过 websocket 和 webpack-dev-server 进行通信的，但是 websocket 的 message 中并没有发现新模块代码。打包后的新模块又是通过什么方式发送到浏览器端的呢？为什么新的模块不通过 websocket 随消息一起发送到浏览器端呢？
 4. 浏览器拿到最新的模块代码，HMR 又是怎么将老的模块替换成新的模块，在替换的过程中怎样处理模块之间的依赖关系？
 5. 当模块的热替换过程中，如果替换模块失败，有什么回退机制吗？
 
@@ -28,16 +26,16 @@ Hot Module Replacement（以下简称 HMR）是 Webpack 在 2013 年引入的最
 
 ![hotModuleReplacement](./hotModuleReplacement.png)
 
-上图是webpack 配合 webpack-dev-server 进行开发应用的模块热更新流程图。
+上图是webpack 配合 webpack-dev-server 进行应用开发的模块热更新流程图。
 
 * 上图底部红色框内是服务端，而上面的橙色框是浏览器端。
 * 绿色的方框是 webpack 代码控制的区域。蓝色方框是 webpack-dev-server 代码控制的区域，洋红色的方框是文件系统，文件修改后的变化就发生在这，而青色的方框是应用本身。
 
 上图显示了我们修改代码到模块热更新完成的一个周期，通过深蓝色的阿拉伯数字符号已经将 HMR 的整个过程标识了出来。
 
-1. 第一步，在 webpack 的 watch 模式下，文件系统中某一个文件发生修改，webpack 监听到文件变化，根据配置文件对模块重新编译打包，并将打包后的代码通过 JavaScript 对象保存在内存中。
-2. 第二步是 webpack-dev-server 和 webpack 之间的接口交互，而在这一步，主要是 webpack-dev-middleware 和 webpack 之间的交互，webpack-dev-middleware 通知 webpack 对代码变化进行监控，并且告诉 webpack，将代码打包到内存中。
-3. 第三步是 webpack-dev-server 对文件变化的一个监控，当我们在配置文件中配置了[devServer.contentBase](https://webpack.js.org/configuration/dev-server/#devserver-contentbase) 的时候，Server 会监听这些配置文件夹中静态文件的变化，变化后会通知浏览器端对应用进行 live reload。（注意，这儿是浏览器刷新，而不是热更新）
+1. 第一步，在 webpack 的 watch 模式下，文件系统中某一个文件发生修改，webpack 监听到文件变化，根据配置文件对模块重新编译打包，并将打包后的代码通过简单的 JavaScript 对象保存在内存中。
+2. 第二步是 webpack-dev-server 和 webpack 之间的接口交互，而在这一步，主要是 dev-server 的中间件 webpack-dev-middleware 和 webpack 之间的交互，webpack-dev-middleware 调用 webpack 暴露的 API对代码变化进行监控，并且告诉 webpack，将代码打包到内存中。
+3. 第三步是 webpack-dev-server 对文件变化的一个监控，这一步不同于第一步，并不是监控代码变化重新打包。当我们在配置文件中配置了[devServer.watchContentBase](https://webpack.js.org/configuration/dev-server/#devserver-watchcontentbase) 为 true 的时候，Server 会监听这些配置文件夹中静态文件的变化，变化后会通知浏览器端对应用进行 live reload。注意，这儿是浏览器刷新，和 HMR 是两个概念。
 4. 第四步也是 webpack-dev-server 代码的工作，该步骤主要是通过 [sockjs](https://github.com/sockjs/sockjs-client)（webpack-dev-server 的依赖）在浏览器端和服务端的之间建立一个 websocket 长连接，将 webpack 编译打包的各个阶段的状态信息告知浏览器端，同时也包括第三步中 Server 监听静态文件变化的信息。浏览器端根据这些 socket 消息进行不同的操作。当然服务端传递的最主要的信息还是新模块的 hash 值，后面的步骤根据这一 hash 值来进行模块热替换。
 5. webpack-dev-server/client 端并不能够请求更新的代码，也不会执行热更模块操作，而把这些工作又交回给了 webpack，webpack/hot/dev-server 的工作就是根据 webpack-dev-server/client 传给他的信息以及 dev-server 的配置决定是刷新浏览器呢还是进行模块热更新。当然如果仅仅是刷新浏览器，也就没有后面那些步骤了。
 6. HotModuleReplacement.runtime 是客户端 HMR 的中枢，它接收到上一步传递给他的新模块的 hash 值，它通过 JsonpMainTemplate.runtime 向 server 端发送 Ajax 请求，服务端返回一个 json，该 json 包含了所有要更新的模块的 hash 值，获取到更新列表后，该模块再次通过 jsonp 请求，获取到最新的模块代码。这就是上图中 7、8、9 步骤。
@@ -46,5 +44,82 @@ Hot Module Replacement（以下简称 HMR）是 Webpack 在 2013 年引入的最
 
 #### 运用 HMR 的简单例子
 
-在上一个部分，通过一张 HMR 流程图，简要的说明了 HMR 进行模块热更新的过程。在这一部分，我将通过一个简单的例子，通过分析源码详细说明各个库在 HMR 过程中的具体职责。
+在上一个部分，通过一张 HMR 流程图，简要的说明了 HMR 进行模块热更新的过程。当然你可能感觉还是很迷糊，对上面出现的一些英文名词也可能比较陌生（上面这些英文名词代表着代码仓库或者仓库中的文件模块），没关系，在这一部分，我将通过一个[最简单最纯粹的例子](https://github.com/Jocs/webpack-HMR-demo)，通过分析源码详细说明各个库在 HMR 过程中的具体职责。
+
+在开始这个例子之前简单对这个仓库文件进行下说明，仓库中包含文件如下：
+
+```
+--hello.js
+--index.js
+--index.html
+--package.json
+--webpack.config.js
+```
+
+项目中包含两个 js 文件，项目入口文件是 index.js 文件，hello.js 文件是 index.js 文件的一个依赖，js 代码如你所见（点击上面例子链接可以查看源码），将在 body 元素中添加一个包含「hello world」的 div 元素。
+
+webpack.config.js的配置如下：
+
+```javascript
+const path = require('path')
+const webpack = require('webpack')
+module.exports = {
+	entry: './index.js',
+	output: {
+		filename: 'bundle.js',
+		path: path.join(__dirname, '/')
+	},
+	devServer: {
+		hot: true
+	}
+}
+```
+
+值得一提的是，在上面的配置中并没有配置 HotModuleReplacementPlugin，原因在于当我们设置 devServer.hot 为 true 后，并且在package.json 文件中添加如下的 script 脚本：
+
+> "start": "webpack-dev-server --hot --open"
+
+添加 —hot 配置项后，devServer 会告诉 webpack 自动引入 HotModuleReplacementPlugin 插件，而不用我们再手动引入了。
+
+进入到仓库目录，npm install 安装依赖后，运行 npm start 就启动了 devServer 服务，访问 http://127.0.0.1:8080 就可以看到我们的页面了。
+
+下面将进入到关键环节，在简单例子中，我将修改 hello.js 文件中的代码，在源码层面上来分析 HMR 的具体运行流程，当然我还是将按照上面图解的步骤来分析。修改代码如下：
+
+```javascript
+// hello.js
+- const hello = () => 'hello world'
++ const hello = () => 'hello eleme'
+```
+
+页面随即改为 hello eleme。
+
+第一步 webpack-dev-middleware 调用 webpack 的 api 对文件系统 watch，当 hello.js 文件发生改变后，webpack 重新对文件进行编译打包，然后保存到内存中。
+
+```javascript
+// webpack-dev-middleware/lib/Shared.js
+if(!options.lazy) {
+	var watching = compiler.watch(options.watchOptions, share.handleCompilerCallback);
+	context.watching = watching;
+}
+```
+
+你可能会疑问了，为什么 webpack 没有将文件直接打包到 output.path 目录下呢？文件又去了哪儿？原来 webpack 将 bundle.js 文件打包到了内存中，不生成文件的原因就在于访问内存中的代码比访问文件系统中的文件更快，而且也减少了代码写入文件的开销，这一切都归功于[memory-fs](https://github.com/webpack/memory-fs)，memory-fs 是 webpack-dev-middleware 的一个依赖库，webpack-dev-server 将 webpack 原本的 outputFileSystem 替换成了MemoryFileSystem 实例，这样代码就将输出到内存中。webpack-dev-middleware 中该部分源码如下：
+
+```javascript
+// webpack-dev-middleware/lib/Shared.js
+var isMemoryFs = !compiler.compilers && compiler.outputFileSystem instanceof MemoryFileSystem;
+if(isMemoryFs) {
+	fs = compiler.outputFileSystem;
+} else {
+	fs = compiler.outputFileSystem = new MemoryFileSystem();
+}
+```
+
+首先判断当前 fileSystem 是否已经是 MemoryFileSystem 的实例，如果不是，用 MemoryFileSystem 的实例替换 compiler 之前的 outputFileSystem。这样 bundle.js 文件代码就作为一个简单 javascript 对象保存在了内存中，当浏览器请求 bundle.js 文件时，devServer就直接去内存中找到上线保存的 javascript 对象返回给浏览器端。
+
+
+
+
+
+
 
