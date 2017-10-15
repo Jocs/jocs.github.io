@@ -85,7 +85,7 @@ module.exports = {
 
 进入到仓库目录，npm install 安装依赖后，运行 npm start 就启动了 devServer 服务，访问 http://127.0.0.1:8080 就可以看到我们的页面了。
 
-下面将进入到关键环节，在简单例子中，我将修改 hello.js 文件中的代码，在源码层面上来分析 HMR 的具体运行流程，当然我还是将按照上面图解来分析。修改代码如下：
+下面将进入到关键环节，在简单例子中，我将修改 hello.js 文件中的代码，在源码层面上来分析 HMR 的具体运行流程，当然我还是将按照上面图解来分析。修改代码如下：（以下所有代码块首行就是该文件的路径）
 
 ```javascript
 // hello.js
@@ -107,7 +107,7 @@ if(!options.lazy) {
 }
 ```
 
-你可能会疑问了，为什么 webpack 没有将文件直接打包到 output.path 目录下呢？文件又去了哪儿？原来 webpack 将 bundle.js 文件打包到了内存中，不生成文件的原因就在于访问内存中的代码比访问文件系统中的文件更快，而且也减少了代码写入文件的开销，这一切都归功于[memory-fs](https://github.com/webpack/memory-fs)，memory-fs 是 webpack-dev-middleware 的一个依赖库，webpack-dev-server 将 webpack 原本的 outputFileSystem 替换成了MemoryFileSystem 实例，这样代码就将输出到内存中。webpack-dev-middleware 中该部分源码如下：
+你可能会疑问了，为什么 webpack 没有将文件直接打包到 output.path 目录下呢？文件又去了哪儿？原来 webpack 将 bundle.js 文件打包到了内存中，不生成文件的原因就在于访问内存中的代码比访问文件系统中的文件更快，而且也减少了代码写入文件的开销，这一切都归功于[memory-fs](https://github.com/webpack/memory-fs)，memory-fs 是 webpack-dev-middleware 的一个依赖库，webpack-dev-middleware 将 webpack 原本的 outputFileSystem 替换成了MemoryFileSystem 实例，这样代码就将输出到内存中。webpack-dev-middleware 中该部分源码如下：
 
 ```javascript
 // webpack-dev-middleware/lib/Shared.js
@@ -173,10 +173,7 @@ function reloadApp() {
     log.info('[WDS] App hot update...');
     const hotEmitter = require('webpack/hot/emitter');
     hotEmitter.emit('webpackHotUpdate', currentHash);
-    if (typeof self !== 'undefined' && self.window) {
-      // broadcast update to window
-      self.postMessage('webpackHotUpdate' + currentHash, '*');
-    }
+    // ...
   } else {
     log.info('[WDS] App updated. Reloading...');
     self.location.reload();
