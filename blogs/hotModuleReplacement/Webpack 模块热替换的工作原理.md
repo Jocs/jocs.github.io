@@ -24,7 +24,7 @@ Hot Module Replacement（以下简称 HMR）是 Webpack 发展至今引入的最
 
 带着上面的问题，于是决定深入到 webpack 源码，寻找 HMR 底层的奥秘。
 
-![hotModuleReplacement](./hotModuleReplacement.png)
+![hotModuleReplacement](https://github.com/Jocs/jocs.github.io/blob/master/blogs/hotModuleReplacement/hotModuleReplacement.png?raw=true)
 
 图一：HMR 工作流程图解
 
@@ -151,7 +151,7 @@ Server.prototype._sendStats = function (sockets, stats, force) {
 
 webpack-dev-server/client 当接收到 type 为 hash 消息后会将 hash 值暂存起来，当接收到 type 为 ok 的消息后对应用执行 reload 操作，如下图所示，hash 消息是在 ok 消息之前。
 
-![](websocket2.png)
+![](https://github.com/Jocs/jocs.github.io/blob/master/blogs/hotModuleReplacement/websocket2.png?raw=true)
 
 图二：websocket 接收 dev-server 通过 sockjs 发送到浏览器端的消息列表
 
@@ -185,13 +185,13 @@ function reloadApp() {
 
 **第四步：webpack 接收到最新 hash 值验证并请求模块代码**
 
-在这一步，其实是 webpack 中三个模块（三个文件，后面英文名对应文件路径）之间配合的结果，首先是 webpack/hot/dev-server（以下简称 dev-server） 监听第三步 webpack-dev-server/client 发送的 `webpackHotUpdate` 消息，调用 webpack/lib/HotModuleReplacement.runtime（简称 HMR runtime）中的 check 方法，检测是否有新的更新，在 check 过程中会利用 webpack/lib/JsonpMainTemplate.runtime（简称 jsonp runtime）中的两个方法 `hotDownloadUpdateChunk` 和 `hotDownloadManifest` ， 第二个方法是调用 AJAX 向服务端请求是否有更新的文件，如果有将发更新的文件列表返回浏览器端，而第一个方法是通过 jsonp 请求最新的模块代码，然后将代码返回给 HMR runtime，HMR 会根据返回的新模块代码做进一步处理，可能是刷新页面，也可能是对模块进行热更新。
+在这一步，其实是 webpack 中三个模块（三个文件，后面英文名对应文件路径）之间配合的结果，首先是 webpack/hot/dev-server（以下简称 dev-server） 监听第三步 webpack-dev-server/client 发送的 `webpackHotUpdate` 消息，调用 webpack/lib/HotModuleReplacement.runtime（简称 HMR runtime）中的 check 方法，检测是否有新的更新，在 check 过程中会利用 webpack/lib/JsonpMainTemplate.runtime（简称 jsonp runtime）中的两个方法 `hotDownloadUpdateChunk` 和 `hotDownloadManifest` ， 第二个方法是调用 AJAX 向服务端请求是否有更新的文件，如果有将发更新的文件列表返回浏览器端，而第一个方法是通过 jsonp 请求最新的模块代码，然后将代码返回给 HMR runtime，HMR runtime  会根据返回的新模块代码做进一步处理，可能是刷新页面，也可能是对模块进行热更新。
 
-![](ajax.png)
+![](https://github.com/Jocs/jocs.github.io/blob/master/blogs/hotModuleReplacement/ajax.png?raw=true)
 
 图三：hotDownloadManifest方法获取更新文件列表
 
-![](jsonp.png)
+![](https://github.com/Jocs/jocs.github.io/blob/master/blogs/hotModuleReplacement/jsonp.png?raw=true)
 
 图四：hotDownloadUpdateChunk获取到更新的新模块代码
 

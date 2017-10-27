@@ -4,6 +4,10 @@
 
 **2017年**
 
+2017年10月 [Webpack Hot Module Replacement 的原理解析](https://github.com/Jocs/jocs.github.io/issues/15)
+
+2017年10月[一道「空间」很贵的排序算法题](https://github.com/Jocs/jocs.github.io/issues/14)
+
 2017年9月[聊聊 Git 改变历史记录](https://github.com/Jocs/jocs.github.io/issues/13)
 
 2017年8月 [ES6 Generator函数实现协同程序](https://github.com/Jocs/jocs.github.io/issues/12)
