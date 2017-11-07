@@ -4,6 +4,8 @@
 
 **2017年**
 
+2017年11月 [内存管理速成手册](https://github.com/Jocs/jocs.github.io/issues/16)
+
 2017年10月 [Webpack Hot Module Replacement 的原理解析](https://github.com/Jocs/jocs.github.io/issues/15)
 
 2017年10月[一道「空间」很贵的排序算法题](https://github.com/Jocs/jocs.github.io/issues/14)
