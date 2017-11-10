@@ -2,6 +2,8 @@
 
 本仓库整理了我原创和翻译的全部文章，如果觉得对您有所帮助，请不吝**star**。
 
+[关于我](https://github.com/Jocs/jocs.github.io/issues/17)
+
 **2017年**
 
 2017年11月 [通过漫画形式来解释 ArrayBuffers 和 SharedArrayBuffers](https://github.com/Jocs/jocs.github.io/issues/17)
