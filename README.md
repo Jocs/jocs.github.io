@@ -2,7 +2,7 @@
 
 本仓库整理了我原创和翻译的全部文章，如果觉得对您有所帮助，请不吝**star**。
 
-[关于我](https://github.com/Jocs/jocs.github.io/issues/17)
+[关于我](https://github.com/Jocs/jocs.github.io/issues/18)
 
 **2017年**
 
