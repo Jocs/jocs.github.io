@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>iamge block</title>
+  <style>
+    .main {
+      display: flex;
+    }
+    .image-wrapper {
+      width: 300px;
+      height: 300px;
+      margin-right: 100px;
+    }
+  </style>
+</head>
+<body>
+  <div class="main">
+    <div class="image-wrapper">
+      <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1517293037224&di=9f33022a9b5587a000b44e7464b3324e&imgtype=0&src=http%3A%2F%2Fpic.qqtn.com%2Fup%2F2016-11%2F2016112116492554527.jpg" alt="">
+    </div>
+   <div class="image-wrapper">
+      <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1517293037224&di=9f33022a9b5587a000b44e7464b3324e&imgtype=0&src=http%3A%2F%2Fpic.qqtn.com%2Fup%2F2016-11%2F2016112116492554527.jpg" alt="" id="img">
+    </div>
+  </div>
+  <div class="tool-bar">
+    <p>1. 设置 src 为1 * 1 px 的透明gif 图片。'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'</p>
+    <button id="setUrl">设置 src</button>
+    <p>2. 设置图片背景色</p>
+    <button id="setBack">设置背景色</button>
+    <p>3. 设置图片宽高</p>
+    <button id="setSize">设置宽高</button>
+  </div>
+  <script>
+    const img = document.querySelector('#img')
+    const setUrl = document.querySelector('#setUrl')
+    const setBack = document.querySelector('#setBack')
+    const setSize = document.querySelector('#setSize')
+    const smallest = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+    let width
+    let height
+    setTimeout(() => {
+      ({ width, height } = img.getBoundingClientRect())
+    }, 200)
+    
+    console.log(width, height)
+    setUrl.addEventListener('click', () => {
+      img.src = smallest
+    })
+    setBack.addEventListener('click', () => {
+      img.style.background = '#efefef'
+    })
+    setSize.addEventListener('click', () => {
+      img.setAttribute('width', width)
+      img.setAttribute('height', height)
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>文本块</title>
+  <style>
+    h2 {
+      text-align: middle;
+      color: orange;
+    }
+    .body {
+      margin: 0;
+      padding: 20px;
+    }
+    .top, .main {
+      margin-top: 50px;
+      display: flex;
+      width: 100%;
+    }
+    .block {
+      height: auto;
+      margin-right: 50px;
+    }
+    .controll-block {
+      padding-left: 200px;
+    }
+    .left-block {
+      flex-shrink: 0;
+      width: 350px;
+    }
+    .top div:last-of-type {
+      margin-right: 0;
+    }
+    .left {
+      border: 1px solid #666;
+      background-repeat: no-repeat;
+      height: 200px;
+      padding: 25px;
+      background-clip: content-box;
+      background-position: 0 25px;
+      background-size: 100% 30px;
+    }
+    .left {
+      background-image: linear-gradient(#eee 50%, orange 100%);
+    }
+    .main {
+      display: flex;
+    }
+    .single {
+      margin-bottom: 200px;
+    }
+    .single .text {
+      text-align: center;
+    }
+    .mask::before {
+      content: '';
+      width: 50%;
+      position: absolute;
+      bottom: 20px;
+      height: 30px;
+      right: 0;
+      background: #fff;
+    }
+    .text {
+      position: relative;
+      width: 300px;
+      padding: 20px;
+      border: 1px solid #666;
+      font-size: 16px;
+      line-height: 30px;
+      margin-right: 25px;
+    }
+    .control-item {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>条纹背景</h2>
+  <div class="top">
+    <div class="block left-block">
+      <pre class="pre-text">
+      </pre>
+      <div class="left"></div>
+    </div>
+    <div class="block controll-block">
+      <h3>调整渐变范围</h3>
+      <input type="range" min="0" max="100" step="1" id="range" value="100">
+      <div>
+        <h3>Y 轴方向背景重复</h3>
+        <button id="repeat">Repeat Y</button>   
+      </div>
+      <div>
+        <h3>将橙色改为透明色</h3>
+        <button id="color">去掉橙色条纹</button>
+      </div>
+    </div>
+  </div>
+  <h2>多行文本</h2>
+  <div class="main">
+    <div class="text" id="text">
+      “饿了么（ele.me）”是中国知名的在线外卖订餐平台，已经覆盖中国数千个城市，聚集了数百万家餐饮商户。饿了么为用户提供极致体验的到家服务，将7亿城镇居民接入30分钟便利生活圈；为不同类型的餐饮及零售行业商户提供基于互联网技术的一体化运营解决方案。
+    </div>
+    <div class="control">
+      <div class="control-item">1. 通过 getComputedStyle获取样式：<ul class="result"></ul></div>
+      <div class="control-item">2. <button class="add-back">添加条纹背景</button></div>
+      <div class="control-item">3. <button class="set-color">设置文字透明</button></div>
+      <div class="control-item">4. <button class="add-mask">设置 mask</button></div>
+    </div>
+  </div>
+  <h2>单行文本</h2>
+  <div class="main single">
+    <div class="text" id="single-text">
+      饿了么，一起拼
+    </div>
+    <div class="control">
+      <div class="control-item">
+        1. 添加条纹背景 <button class="add-single-back"> 添加</button>
+      </div>
+      <div class="control-item">
+        2. 计算文本宽度并设置背景宽度 <button class="com-single"> 计算</button>
+        文本宽度：<span class="width-result"></span>
+        <button class="setPos">调整背景条纹位置</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const preText = document.querySelector('.pre-text')
+    const leftBlock = document.querySelector('.left')
+    const repeat = document.querySelector('#repeat')
+    const range = document.querySelector('#range')
+    const colorButton = document.querySelector('#color')
+    const text = document.querySelector('#text')
+    const singleText = document.querySelector('#single-text')
+    const result = document.querySelector('.result')
+    const addBackButton = document.querySelector('.add-back')
+    const addMask = document.querySelector('.add-mask')
+    const setColor = document.querySelector('.set-color')
+    const addSingleBack = document.querySelector('.add-single-back')
+    const comSingle = document.querySelector('.com-single')
+    const widthResult = document.querySelector('.width-result')
+    const setPos = document.querySelector('.setPos')
+    const { lineHeight, fontSize, paddingTop, paddingBottom, paddingRight, paddingLeft } = getComputedStyle(text)
+    const { width } = text.getBoundingClientRect()
+    result.innerHTML = `<li>lineHeight:${lineHeight}</li>
+      <li>fontSize:${fontSize}</li>
+      <li>paddingTop:${paddingTop}</li>
+      <li>paddingBottom${paddingBottom}</li>`
+    const textHeightRatio = parseInt(fontSize, 10) / parseInt(lineHeight, 10)
+    const color = '#efefef'
+    const style = {
+      backgroundClip: 'content-box',
+      backgroundRepeat: 'repeat-y',
+      backgroundImage: `linear-gradient(transparent ${(1 - textHeightRatio) / 2 * 100}%,${color} 0%,${color} ${((1 - textHeightRatio) / 2 + textHeightRatio) * 100}%,transparent 0%)`,
+      backgroundColor: 'transparent',
+      backgroundOrigin: 'content-box',
+      backgroundSize: `100% ${lineHeight}`
+    }
+    const setPreText = (repeat, backgroundImage) => {
+      const style = `{
+  background-repeat: ${repeat};
+  background-size: 100% 30px;
+  background-image: ${backgroundImage};
+}`
+      preText.textContent = style
+    }
+    setPreText('no-repeat', 'linear-gradient(#eee 50%, orange 100%)')
+    const setBackGround = () => {
+      Object.assign(text.style, style)
+    }
+    addBackButton.addEventListener('click', setBackGround)
+    setColor.addEventListener('click', () => {
+      text.style.color = 'transparent'
+    })
+    addMask.addEventListener('click', () => {
+      text.classList.add('mask')
+    })
+    addSingleBack.addEventListener('click', () => {
+      Object.assign(singleText.style, style)
+    })
+    comSingle.addEventListener('click', () => {
+      const span = document.createElement('span')
+      span.textContent = singleText.textContent
+      Object.assign(span.style, {
+        fontSize,
+        lineHeight
+      })
+      document.body.appendChild(span)
+      const textWidth = span.getBoundingClientRect().width
+      widthResult.textContent = textWidth
+      const textWidthPercent = textWidth / (width - parseInt(paddingRight, 10) - parseInt(paddingLeft, 10))
+      console.log(`${textWidthPercent * 100}% ${lineHeight}`)
+      singleText.style.backgroundSize = `${textWidthPercent * 100}% ${lineHeight}`
+    })
+    setPos.addEventListener('click', () => {
+      singleText.style.backgroundPositionX = '50%'
+      singleText.style.color = 'transparent'
+    })
+    range.addEventListener('change', event => {
+      setPreText('no-repeat', `linear-gradient(#eee 50%, orange ${range.value}%)`)
+      leftBlock.style.backgroundImage = `linear-gradient(#eee 50%, orange ${range.value}%)`
+    })
+    repeat.addEventListener('click', () => {
+      setPreText('repeat-y', `linear-gradient(#eee 50%, orange ${range.value}%)`)
+      leftBlock.style.backgroundRepeat = 'repeat-y'
+    })
+    colorButton.addEventListener('click', () => {
+      setPreText('repeat-y', `linear-gradient(#eee 50%, transparent ${range.value}%)`)
+      leftBlock.style.backgroundImage = `linear-gradient(#eee 50%, transparent ${range.value}%)`
+    })
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
