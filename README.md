@@ -6,6 +6,8 @@
 
 **2017年**
 
+2018年 2 月[使用 Atomics 来在 SharedArrayBuffers 中避免竞用条件](https://github.com/Jocs/jocs.github.io/issues/19)
+
 2017年11月 [通过漫画形式来解释 ArrayBuffers 和 SharedArrayBuffers](https://github.com/Jocs/jocs.github.io/issues/17)
 
 2017年11月 [内存管理速成手册](https://github.com/Jocs/jocs.github.io/issues/16)
