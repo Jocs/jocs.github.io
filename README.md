@@ -4,9 +4,15 @@
 
 [关于我](https://github.com/Jocs/jocs.github.io/issues/18)
 
-**2017年**
+**2018年**
+
+2018年 3 月[自动化生成 H5 骨架页面](https://github.com/Jocs/jocs.github.io/issues/21)
+
+2018年 2 月[新零售图片加载缓慢及优化方案](https://github.com/Jocs/jocs.github.io/issues/20)
 
 2018年 2 月[使用 Atomics 来在 SharedArrayBuffers 中避免竞用条件](https://github.com/Jocs/jocs.github.io/issues/19)
+
+**2017年**
 
 2017年11月 [通过漫画形式来解释 ArrayBuffers 和 SharedArrayBuffers](https://github.com/Jocs/jocs.github.io/issues/17)
 
