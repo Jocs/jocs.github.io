@@ -6,6 +6,8 @@
 
 **2018年**
 
+2018 年 5 月 [一种自动化生成骨架屏的方案](https://github.com/Jocs/jocs.github.io/issues/22)
+
 2018年 3 月[自动化生成 H5 骨架页面](https://github.com/Jocs/jocs.github.io/issues/21)
 
 2018年 2 月[新零售图片加载缓慢及优化方案](https://github.com/Jocs/jocs.github.io/issues/20)
