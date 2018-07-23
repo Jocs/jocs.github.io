@@ -1,114 +1,77 @@
-### 罗冉个人简历
+## 罗冉简历
 
 #### 联系方式
 
-​	**手机:** 173\*\*\*\*0713        **Email:** luoran1988@126.com
-
-
+​    手机：173****0713    Email : ransixi@gmail.com
 
 #### 个人信息
 
-​	**基本:**  罗冉/男/1988
+​    基本：**罗冉**/男/1988/前端工程师
 
-​	**学历:**  **北京师范大学**（2007-2011） 生物科学/国际贸易双学位
+​    学历：**北京师范大学** （2007 - 2011） 生物科学/国际贸易双学位
 
-​	**Github:**  https://github.com/Jocs
+​    GitHub：https://github.com/jocs
 
-​	**期望职位:** Web前端高级工程师
+#### 工作经历
 
-​	**期望薪资:** // TODO
+​    饿了么（2017-08-01 ~ 2018-07-31）
 
-​	**期望城市:** 上海
+1. vue-img 项目（https://github.com/ElemeFE/vue-img）
 
+该项目用于饿了么主站移动端项目，我主要为其增加两个功能：按移动端设备视窗尺寸对图片尺寸进行裁剪。其次是延迟首屏以外图片的加载，也就是首先加载首屏内部图片。
 
+2. Page-skeleton-webpack-plugin项目（https://github.com/ElemeFE/page-skeleton-webpack-plugin）
 
-#### 工作经历（时间倒序）
+这是一款 webpack 插件，其在开发过程中，对不同的移动端 web 页面生成骨架屏，并在打包的过程中将骨架屏打包到项目中，支持不同 loading 动画、多路由、手机预览、骨架屏源码编辑等功能。该自动化生成骨架屏方案已提交饿了么专利申请。
 
-​	**饿了么（2017年八月~至今）**
+​    杭州数云科技有限公司（2015-09-15 ~ 2017-07-31）
 
-​	1. // TODO
+1. eTrack.js 前端错误监控系统（http://etrack.shuyun.com/）
 
-​	**杭州数云科技有限公司（2015年9月~2017年7月）**
+eTrack.JS 是一个前端错误日志监控系统，收集和过滤客户端的 JS 错误和 Ajax 错误，并将错误进行必要的格式化，发送到 Node 服务器，通过 Mongodb 存储，WebSocket 将错误实时推送到前端监控页面。在该项目中，我负责全栈，包括设计和开发。
 
-​	1. **内容管理项目**
+ 前端技术栈：React + Redux + eChart + socket.io
 
-​	内容管理项目是一个集邮件编辑、H5页面编辑为一体的内容编辑器，作为前端项目核心程序员，我完成了项				目的前端架构（Angular1.5.8 + 公司自研组件库）、及H5编辑器。项目中主要的难点就是内容保存时对邮件或者H5页面进行截图，以便在列表页进行图片展示，通过对一些DOM转化Canvas的库的选型，最终选择了**html2canvas**,该库在处理H5页面截图是性能不错，因为H5页面中图片体积不大，且没有跨域图片，但是在邮件截图中遇到了瓶颈，html2canvas不能处理跨域图片，且邮件端的图片体积较大，因此邮件端的截图方案最终选择了使用Nodejs搭建了一个截图服务器，将源码发送到截图服务器，使用phantomjs对邮件内容在服务器端渲染，然后截图，图片上传又拍云，并通过websocket将图片url推送到前端进行及时展示。
+服务端技术栈：Node + Mongoose + Express
 
-​	2. **公司数据赢家项目国际化方案**
+2. 内容营销系统
 
-​	由于公司业务拓展的需求，需对现有项目进行国际化，技术总监要求就是业务代码和国际化代码尽量松耦合，对现有业务代码进行极小改动。最终的方案就是[**jo-i18n**](https://github.com/Jocs/jo-i18n)（由于不涉及公司业务，开源Github），**jo-i18n**是基于[messageformat](https://github.com/messageformat/messageformat.js)之上构建的国际化解决方案，得益于messageformat的优良特性，jo-i18n支持[Unicode CLDR](http://cldr.unicode.org/)标准中的所有[语言](http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html)，能够处理**单复数**、**日期**和**性别**等语言翻译问题。
+内容营销系统是集邮件编辑和 H5 页面编辑于一体的内容编辑器，当时我主要负责 H5 页面编辑的选型和开发，实现的主要功能：支持不同的编辑组件，包括图片、文本、优惠券、物流信息等，对不同编辑组件进行拖拽生成 H5 页面，H5页面预览、保存及发布到微信端、微信端流转的效果统计。
 
-​	由于公司大部分项目使用Angular框架，**jo-i18n**目前很好得支持Angular框架，项目提供了`translateProvider`方法轻松创建国际化翻译指令。
+​    欧莱雅中国研发中心（2012-08-06 ~ 2015-09-14）
 
-​	3.**开发千牛插件**
+职位是 Junior Scientist，负责人造皮肤的质量检测。
 
-​	刚进公司业务组就接到一个紧迫任务，15天内开发一个千牛插件并上线，前端直接调淘宝接口，但是淘宝接口也是并行开发的，也就是说所有的前端接口都是根据淘宝提供的接口文档来写的，当时我选择的方案是通过Node.js提供一个mock server。根据接口文档提供一些mock接口，这样前端开发就不会太局限。到上线前两天到淘宝驻场开发调试接口，前一天测试，最后准时上线。
+​    北京市水产科学研究所（2011-07-01 ~ 2012-07-31）
 
+职位初级实验员，西伯利亚鲟鱼育种。蛋白质表达。
 
+#### 开源项目
 
-​	**欧莱雅中国研发中心（2012~2015）** 职位：Junior Scientist
+1. marktext（ https://github.com/marktext/marktext )  star：6778+
 
-​	负责公司人造皮肤质量检测，与目前求职职位无关。
+Marktext 是一款开源的多平台 markdown 编辑器，旨在为用户提供高效的编辑体验。项目开源 5 个月来，Github release 下载量 4 万多，不包括其他平台（homebrew、Flatpak 等）。
 
+更多开源项目请查看个人信息中的 GitHub。
 
+#### 技术分享
 
-​	**北京市水产科学研究所（2011~2012）** 职位：初级研究员
+FDcon2018 第三届中国前端开发者千人峰会，优秀讲师。
 
-​	蛋白质表达、西伯利亚鲟育种工作，与目前求职职位无关。
+分享主题：**一种自动化生成骨架屏的方案**
 
+#### 技术清单
 
+开发语言：JavaScript、C （学习中）
 
-#### 开源项目和作品
+Web 框架：Angular1、Vue、React、Electron
 
-​	**个人作品**(未开源)
+前端工具：webpack、rollup 及其插件生态、Jasmine、Karma 及其生态
 
-​	[eTrack.JS](http://etrack.shuyun.com/)是一个前端错误日志监控系统，通过收集、过滤客户端的JS错误或者Ajax错误，并将错误进行必要的格式化，发送到NodeJS服务器，通过Mongodb存储，WebSocket推送到前端监控应用中。前端技术栈：React + Redux + eChart + socket.io。服务端技术栈：NodeJs + Mongoose + Express。该项目主要启发于**mknichel**的一篇文章[javascript-errors](https://github.com/mknichel/javascript-errors)
-
-​	**开源项目**
-
-​	[ESLint_docs](https://github.com/Jocs/ESLint_docs): 该项目是集ESLint文档翻译，配置及使用说明为一体的ESLint使用方案，最初是用于公司项目中，作为代码规范的一部分。**Star: 146  Fork: 36**
-
-​	[node_mongodb_blog_system](https://github.com/Jocs/node_mongodb_blog_system): 该项目是通过NodeJs + Mongodb搭建的多人在线博客系统，也是最初学习NodeJs开发的项目。 **Star: 52    Fork: 22**
-
-​	**个人文章及翻译**
-
-​	[ES2015系列--Build Your Own Promise](https://github.com/Jocs/jocs.github.io/issues/7)（原创）
-
-​	[JavaScript Errors 指南](https://github.com/Jocs/jocs.github.io/issues/1)（翻译）
-
-​	**公司内部演讲**
-
-​	[Functional Programming](https://github.com/Jocs/jocs.github.io/tree/master/presentations/functional-Programming)
-
-
-
-#### 技能清单
-
-​	语言：JavaScript、Html、CSS 、Haskell（了解）
-
-​	Web框架：Angular1.x(熟练)、Vue2.x（熟练）、React + Redux（了解）
-
-​	移动端框架：Weex
-
-​	前端工具：Webpack、babel、Sass、Less
-
-​	测试工具: Jasmine、Karma
-
-​	服务端：NodeJs、Express、Mongoose、Websocket
+服务端：Nodejs、Express 等
 
 #### 写在最后
 
-​	非常感谢您阅读我的简历，期待与您共事
+做用户喜欢的产品，享受过程带来的乐趣。
 
-
-
-
-
-​	
-
-​	
-
-
-
-
-
+​    
