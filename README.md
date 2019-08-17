@@ -4,6 +4,10 @@
 
 [关于我](https://github.com/Jocs/jocs.github.io/issues/18)
 
+**2019年**
+
+2019 年 7 月 [开源 - 汲取和共享](https://github.com/Jocs/jocs.github.io/issues/23)
+
 **2018年**
 
 2018 年 5 月 [一种自动化生成骨架屏的方案](https://github.com/Jocs/jocs.github.io/issues/22)
