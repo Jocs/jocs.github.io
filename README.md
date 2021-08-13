@@ -6,9 +6,9 @@
 
 **2020年**
 
-2020 年 5 月 [《见识》读后感](https://github.com/Jocs/jocs.github.io/issues/27)
+2020 年 8 月 [《见识》读后感](https://github.com/Jocs/jocs.github.io/issues/27)
 
-2020 年 5 月 [《态度》读后感](https://github.com/Jocs/jocs.github.io/issues/26)
+2020 年 8 月 [《态度》读后感](https://github.com/Jocs/jocs.github.io/issues/26)
 
 2020 年 5 月 [《赋能》读后感](https://github.com/Jocs/jocs.github.io/issues/25)
 
