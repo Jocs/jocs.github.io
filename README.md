@@ -4,6 +4,14 @@
 
 [关于我](https://github.com/Jocs/jocs.github.io/issues/18)
 
+**2020年**
+
+2020 年 5 月 [《见识》读后感](https://github.com/Jocs/jocs.github.io/issues/27)
+
+2020 年 5 月 [《态度》读后感](https://github.com/Jocs/jocs.github.io/issues/26)
+
+2020 年 5 月 [《赋能》读后感](https://github.com/Jocs/jocs.github.io/issues/25)
+
 **2019年**
 
 2019 年 7 月 [开源 - 汲取和共享](https://github.com/Jocs/jocs.github.io/issues/23)
