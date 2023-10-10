@@ -12,11 +12,23 @@
 
 ​    GitHub：https://github.com/jocs
 
+#### 开源项目
+
+1. marktext（ https://github.com/marktext/marktext )  star：4w+
+
+Marktext 是一款开源的多平台 markdown 编辑器，旨在为用户提供高效的编辑体验。项目开源以来，Github release 下载量 1.3M+（不包括其他平台 homebrew、Flatpak 等），发布了 32 个版本，开源贡献者超过 100 人。
+
+#### 技术分享
+
+1. FDcon2018 第三届中国前端开发者千人峰会，优秀讲师。分享主题：**一种自动化生成骨架屏的方案**，演讲稿：https://github.com/Jocs/jocs.github.io/issues/22
+
+2. 一些原创和翻译的文章： https://github.com/Jocs/jocs.github.io/issues
+
 #### 工作经历及主要项目
 
 抖音电商（2021.10~2023.10）
 
-职位：抖音盒子前端方向负责人，主端营销前端方向负责人，团队规模8~15人
+职位：抖音盒子前端方向负责人，主端营销前端方向负责人，带 8~15 人前端团队
 
 1. 梳理业务方向：消费者增长、用户成长体系和大促营销活动。为了帮助团队快速熟悉业务，对外，邀请产品同学给团队进行业务串讲和 QA，对内，组织业务分享，个人分享电商业务系列-抖音电商如何做用户增长 。同时根据业务方向，进行团队组织架构的调整，关键方向都有相关负责同学，同时做好 backup。完成了社交分享裂变从 0 到 1 迭代，推动社交裂变组件化等建设，提升产品迭代效率。
 
@@ -73,20 +85,6 @@ eTrack.JS 是一个前端错误日志监控系统，收集和过滤客户端的 
 ​北京市水产科学研究所（2011-07-01 ~ 2012-07-31）
 
 职位：初级实验员，西伯利亚鲟鱼育种。蛋白质表达。
-
-#### 开源项目
-
-1. marktext（ https://github.com/marktext/marktext )  star：4w+
-
-Marktext 是一款开源的多平台 markdown 编辑器，旨在为用户提供高效的编辑体验。项目开源以来，Github release 下载量 1.3M+（不包括其他平台 homebrew、Flatpak 等），发布了 32 个版本，开源贡献者超过 100 人。
-
-更多开源项目请查看个人信息中的 GitHub。
-
-#### 技术分享
-
-1. FDcon2018 第三届中国前端开发者千人峰会，优秀讲师。分享主题：**一种自动化生成骨架屏的方案**，演讲稿：https://github.com/Jocs/jocs.github.io/issues/22
-
-2. 一些原创和翻译的文章： https://github.com/Jocs/jocs.github.io/issues
 
 #### 技术清单
 
