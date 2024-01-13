@@ -1,11 +1,4 @@
----
-external: false
-title: "Webpack Hot Module Replacement 的原理解析"
-description: "Webpack Hot Module Replacement 的原理解析."
-date: 2017-10-27
----
-
-> 文章发布在[饿了么大前端专栏](https://zhuanlan.zhihu.com/p/30669007)
+### Webpack Hot Module Replacement 的原理解析
 
 Hot Module Replacement（以下简称 HMR）是 Webpack 发展至今引入的最令人兴奋的特性之一 ，当你对代码进行修改并保存后，Webpack 将对代码重新打包，并将新的模块发送到浏览器端，浏览器通过新的模块替换老的模块，这样在不刷新浏览器的前提下就能够对应用进行更新。例如，在开发 Web 页面过程中，当你点击按钮，出现一个弹窗的时候，发现弹窗标题没有对齐，这时候你修改 CSS 样式，然后保存，在浏览器没有刷新的前提下，标题样式发生了改变。感觉就像在 Chrome 的开发者工具中直接修改元素样式一样。
 
@@ -15,9 +8,9 @@ Hot Module Replacement（以下简称 HMR）是 Webpack 发展至今引入的最
 
 在 Webpack HMR 功能之前，已经有很多 live reload 的工具或库，比如 [live-server](http://tapiov.net/live-server/)，这些库监控文件的变化，然后通知浏览器端刷新页面，那么我们为什么还需要 HMR 呢？答案其实在上文中已经提及一些。
 
-- live reload 工具并不能够保存应用的状态（states），当刷新页面后，应用之前状态丢失，还是上文中的例子，点击按钮出现弹窗，当浏览器刷新后，弹窗也随即消失，要恢复到之前状态，还需再次点击按钮。而 Webapck HMR 则不会刷新浏览器，而是运行时对模块进行热替换，保证了应用状态不会丢失，提升了开发效率。
-- 在古老的开发流程中，我们可能需要手动运行命令对代码进行打包，并且打包后再手动刷新浏览器页面，而这一系列重复的工作都可以通过 HMR 工作流来自动化完成，让更多的精力投入到业务中，而不是把时间浪费在重复的工作上。
-- HMR 兼容市面上大多前端框架或库，比如[React Hot Loader](https://github.com/gaearon/react-hot-loader)，[Vue-loader](https://github.com/vuejs/vue-loader)，能够监听 React 或者 Vue 组件的变化，实时将最新的组件更新到浏览器端。[Elm Hot Loader](https://github.com/fluxxu/elm-hot-loader) 支持通过 webpack 对 Elm 语言代码进行转译并打包，当然它也实现了 HMR 功能。
+* live reload 工具并不能够保存应用的状态（states），当刷新页面后，应用之前状态丢失，还是上文中的例子，点击按钮出现弹窗，当浏览器刷新后，弹窗也随即消失，要恢复到之前状态，还需再次点击按钮。而 Webapck HMR 则不会刷新浏览器，而是运行时对模块进行热替换，保证了应用状态不会丢失，提升了开发效率。
+* 在古老的开发流程中，我们可能需要手动运行命令对代码进行打包，并且打包后再手动刷新浏览器页面，而这一系列重复的工作都可以通过 HMR 工作流来自动化完成，让更多的精力投入到业务中，而不是把时间浪费在重复的工作上。
+* HMR 兼容市面上大多前端框架或库，比如[React Hot Loader](https://github.com/gaearon/react-hot-loader)，[Vue-loader](https://github.com/vuejs/vue-loader)，能够监听 React 或者 Vue 组件的变化，实时将最新的组件更新到浏览器端。[Elm Hot Loader](https://github.com/fluxxu/elm-hot-loader) 支持通过 webpack 对 Elm 语言代码进行转译并打包，当然它也实现了 HMR 功能。
 
 #### HMR 的工作原理图解
 
@@ -31,14 +24,14 @@ Hot Module Replacement（以下简称 HMR）是 Webpack 发展至今引入的最
 
 带着上面的问题，于是决定深入到 webpack 源码，寻找 HMR 底层的奥秘。
 
-![hotModuleReplacement](/blog/hotModuleReplacement/hotModuleReplacement.png)
+![hotModuleReplacement](https://github.com/Jocs/jocs.github.io/blob/master/blogs/hotModuleReplacement/hotModuleReplacement.png?raw=true)
 
 图一：HMR 工作流程图解
 
 上图是webpack 配合 webpack-dev-server 进行应用开发的模块热更新流程图。
 
-- 上图底部红色框内是服务端，而上面的橙色框是浏览器端。
-- 绿色的方框是 webpack 代码控制的区域。蓝色方框是 webpack-dev-server 代码控制的区域，洋红色的方框是文件系统，文件修改后的变化就发生在这，而青色的方框是应用本身。
+* 上图底部红色框内是服务端，而上面的橙色框是浏览器端。
+* 绿色的方框是 webpack 代码控制的区域。蓝色方框是 webpack-dev-server 代码控制的区域，洋红色的方框是文件系统，文件修改后的变化就发生在这，而青色的方框是应用本身。
 
 上图显示了我们修改代码到模块热更新完成的一个周期，通过深蓝色的阿拉伯数字符号已经将 HMR 的整个过程标识了出来。
 
@@ -158,7 +151,7 @@ Server.prototype._sendStats = function (sockets, stats, force) {
 
 webpack-dev-server/client 当接收到 type 为 hash 消息后会将 hash 值暂存起来，当接收到 type 为 ok 的消息后对应用执行 reload 操作，如下图所示，hash 消息是在 ok 消息之前。
 
-![](/blog/hot-module-replacement/websocket2.png)
+![](https://github.com/Jocs/jocs.github.io/blob/master/blogs/hotModuleReplacement/websocket2.png?raw=true)
 
 图二：websocket 接收 dev-server 通过 sockjs 发送到浏览器端的消息列表
 
@@ -194,11 +187,11 @@ function reloadApp() {
 
 在这一步，其实是 webpack 中三个模块（三个文件，后面英文名对应文件路径）之间配合的结果，首先是 webpack/hot/dev-server（以下简称 dev-server） 监听第三步 webpack-dev-server/client 发送的 `webpackHotUpdate` 消息，调用 webpack/lib/HotModuleReplacement.runtime（简称 HMR runtime）中的 check 方法，检测是否有新的更新，在 check 过程中会利用 webpack/lib/JsonpMainTemplate.runtime（简称 jsonp runtime）中的两个方法 `hotDownloadUpdateChunk` 和 `hotDownloadManifest` ， 第二个方法是调用 AJAX 向服务端请求是否有更新的文件，如果有将发更新的文件列表返回浏览器端，而第一个方法是通过 jsonp 请求最新的模块代码，然后将代码返回给 HMR runtime，HMR runtime  会根据返回的新模块代码做进一步处理，可能是刷新页面，也可能是对模块进行热更新。
 
-![](/blog/hot-module-replacement/ajax.png)
+![](https://github.com/Jocs/jocs.github.io/blob/master/blogs/hotModuleReplacement/ajax.png?raw=true)
 
 图三：hotDownloadManifest方法获取更新文件列表
 
-![](/blog/hot-module-replacement/jsonp.png)
+![](https://github.com/Jocs/jocs.github.io/blob/master/blogs/hotModuleReplacement/jsonp.png?raw=true)
 
 图四：hotDownloadUpdateChunk获取到更新的新模块代码
 
@@ -286,7 +279,7 @@ if(module.hot) {
 
 这样就是整个 HMR 的工作流程了。
 
-#### 写在最后
+####写在最后
 
 这篇文章的作用并不是对 webpack HMR 的详尽解析，很多细节方面也没过多讨论，而只想起到一个抛砖引玉的作用，给大家展现一个 HMR 概述的工作流程，如果对 webpack 感兴趣，想知道 webpack HMR 更多的底层细节，相信阅读 webpack 源码将是一个不错的选择，也希望这篇文章能够对你阅读源码有所帮助，这才是我真正的写作目的。
 
