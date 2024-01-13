@@ -1,0 +1,44 @@
+---
+import slugify from 'slugify';
+import type { HTMLAttributes, HTMLTag } from 'astro/types'
+
+interface Props extends HTMLAttributes<'h1'> {
+  level: 1 | 2 | 3 | 4 | 5 | 6;
+  children: any;
+}
+
+const { level, children } = Astro.props;
+const headingText = children.length && typeof children[0] === 'string' ? children[0] : '';
+const id = slugify(headingText.toLowerCase());
+
+let Tag: HTMLTag = "h1";
+if (level === 2) {
+  Tag = "h2";
+} else if (level === 3) {
+  Tag = "h3";
+} else if (level === 4) {
+  Tag = "h4";
+} else if (level === 5) {
+  Tag = "h5";
+} else if (level === 6) {
+  Tag = "h6";
+}
+const shouldAddBeforePseudoStyle = ["h1", "h2"].includes(Tag)
+---
+
+<Tag id={id} class="group flex">
+  {
+    shouldAddBeforePseudoStyle?
+    <span class="
+      pl-6 relative block leading-[150%]
+      before:absolute before:content-[''] before:w-2 before:h-full before:top-0 before:left-0 before:bg-primary-green
+    ">
+      {children}
+    </span>
+    :
+    <span class="relative block leading-[150%]">
+      {children}
+    </span>
+  }
+  
+</Tag>

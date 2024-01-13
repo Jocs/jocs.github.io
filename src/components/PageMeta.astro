@@ -1,0 +1,65 @@
+---
+import { getPageMeta } from "../lib/seo";
+import {
+  SITE_TITLE,
+  SITE_DESCRIPTION,
+  SITE_URL,
+  TWITTER_HANDLE,
+} from "../config";
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+
+const { meta, og, twitter } = getPageMeta({
+  title: title || SITE_TITLE,
+  description: description || SITE_DESCRIPTION,
+  baseUrl: SITE_URL,
+  ogImageAbsoluteUrl: `${SITE_URL}/images/og.png`,
+  ogImageAltText: "My fancy website",
+  ogImageWidth: 1200,
+  ogImageHeight: 630,
+  siteOwnerTwitterHandle: TWITTER_HANDLE,
+  contentAuthorTwitterHandle: TWITTER_HANDLE,
+});
+---
+
+<!-- Primary Meta Tags -->
+<title>{meta.title}</title>
+<meta name="title" content={meta.title} />
+{meta.description && <meta name="description" content={meta.description} />}
+
+<!-- Open Graph / Facebook -->
+{og.title && <meta property="og:title" content={og.title} />}
+{og.description && <meta property="og:description" content={og.description} />}
+{og.type && <meta property="og:type" content={og.type} />}
+{og.url && <meta property="og:url" content={og.url} />}
+{og.image && <meta property="og:image" content={og.image} />}
+{og.imageAlt && <meta property="og:image:alt" content={og.imageAlt} />}
+{og.imageWidth && <meta property="og:image:width" content={og.imageWidth} />}
+{og.imageHeight && <meta property="og:image:height" content={og.imageHeight} />}
+
+<!-- Twitter -->
+{twitter.title && <meta property="twitter:title" content={twitter.title} />}
+{
+  twitter.description && (
+    <meta property="twitter:description" content={twitter.description} />
+  )
+}
+{twitter.site && <meta property="twitter:site" content={twitter.site} />}
+{
+  twitter.creator && (
+    <meta property="twitter:creator" content={twitter.creator} />
+  )
+}
+<meta property="twitter:card" content="summary_large_image" />
+{twitter.image && <meta property="twitter:image" content={twitter.image} />}
+{
+  twitter.imageAlt && (
+    <meta property="twitter:image:alt" content={twitter.imageAlt} />
+  )
+}
+<!-- {twitter.url && <meta property="twitter:url" content={twitter.url} />} -->

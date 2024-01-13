@@ -1,0 +1,52 @@
+/*
+  This is a customised bare minimum styles that include only the brands used in this template.
+  If you need more brands, either use brands.min.css file or copy the brands needed to this file.
+*/
+:root,
+:host {
+  --fa-style-family-brands: 'Font Awesome 6 Brands';
+  --fa-font-brands: normal 400 1em/1 'Font Awesome 6 Brands';
+}
+
+@font-face {
+  font-family: 'Font Awesome 6 Brands';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("../webfonts/fa-brands-400.woff2") format("woff2"), url("../webfonts/fa-brands-400.ttf") format("truetype");
+}
+
+.fab,
+.fa-brands {
+  font-weight: 400;
+}
+
+
+.fa-github:before {
+  content: "\f09b";
+}
+
+
+.fa-github-alt:before {
+  content: "\f113";
+}
+
+.fa-square-github:before {
+  content: "\f092";
+}
+
+.fa-github-square:before {
+  content: "\f092";
+}
+
+.fa-twitter:before {
+  content: "\f099";
+}
+
+.fa-square-twitter:before {
+  content: "\f081";
+}
+
+.fa-twitter-square:before {
+  content: "\f081";
+}

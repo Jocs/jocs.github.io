@@ -1,0 +1,67 @@
+---
+import HeaderLink from "./HeaderLink.astro";
+---
+
+<Fragment>
+  <nav class="hidden md:inline">
+    <section class="text-text-bold">
+      <ul class="unset flex gap-4 [&>li]:p-0">
+        <li><HeaderLink href="/">Home</HeaderLink></li>
+        <li><HeaderLink href="/blog">Blog</HeaderLink></li>
+        <li><HeaderLink href="/projects">Projects</HeaderLink></li>
+      </ul>
+    </section>
+  </nav>
+  <nav class="md:hidden">
+    <button id="mobile-menu-open">
+      <i class="fa-solid fa-bars" aria-hidden="true" title="Open mobile menu"
+      ></i>
+      <span class="fa-sr-only">Open mobile menu</span>
+    </button>
+    <section
+      id="mobile-menu"
+      class="hide-menu fixed top-0 left-0 z-10 w-full h-full transition-transform bg-black/75 border-primary-blue"
+    >
+      <div class="bg-bg-body w-[75%] h-full drop-shadow-2xl">
+        <button id="mobile-menu-close" class="px-6 h-[5rem] text-lg xml-[1px]">
+          <i
+            class="fa-solid fa-xmark"
+            aria-hidden="true"
+            title="Close mobile menu"></i>
+          <span class="fa-sr-only">Close mobile menu</span>
+        </button>
+        <ul class="unset flex flex-col text-text-bold gap-4 [&>li]:p-0 px-6">
+          <li><HeaderLink href="/">Home</HeaderLink></li>
+          <li><HeaderLink href="/blog">Blog</HeaderLink></li>
+          <li><HeaderLink href="/projects">Projects</HeaderLink></li>
+        </ul>
+      </div>
+    </section>
+  </nav>
+</Fragment>
+
+<script>
+  // @ts-nocheck
+  document.querySelector("#mobile-menu-open").addEventListener("click", () => {
+    const menuElem = document.querySelector("#mobile-menu");
+    menuElem.classList.remove("hide-menu");
+    menuElem.classList.add("show-menu");
+    document.body.style.overflow = "hidden";
+  });
+
+  document.querySelector("#mobile-menu-close").addEventListener("click", () => {
+    const menuElem = document.querySelector("#mobile-menu");
+    menuElem.classList.remove("show-menu");
+    menuElem.classList.add("hide-menu");
+    document.body.style.overflow = "auto";
+  });
+</script>
+
+<style>
+  .hide-menu {
+    transform: translateX(-100%);
+  }
+  .show-menu {
+    transform: translateX(0%);
+  }
+</style>

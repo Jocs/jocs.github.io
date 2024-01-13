@@ -1,0 +1,76 @@
+---
+/*
+  This is not a layout but just a component that's used in page layouts.
+  Easiest way to use a Google font is to embed it as a <link>. But we're
+  gonna load fonts the fastest way.
+
+  Here's the formula for best font load performance.
+  1. Serve from same origin as woff/woff2
+  2. Load font @font-face definitions as inline styles in page <head>
+  3. Preload the same origin font URLs
+
+  Hosting providers like Netlify/Vercel automatically cache your
+  public assets (fonts) and serve from their CDN closest to the users.
+
+  Read more here to understand font load performance
+  https://sia.codes/posts/making-google-fonts-faster
+
+  woff/woff2 assets downloaded using google-webfonts-helper:
+  https://gwfh.mranftl.com/fonts/space-grotesk?subsets=latin
+*/
+---
+
+<!-- 
+    We don't want to use <link /> to load fonts from Google CDN 
+    but if you want to switch font this is the easiest way 
+    to check how your page will look with the new font.
+--><!-- 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&display=block"
+        rel="stylesheet"
+    />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;0,800;1,400&display=swap"
+        rel="stylesheet"
+    />
+-->
+<Fragment>
+  <link
+    rel="preload"
+    href="/fonts/space-grotesk-v13-latin-regular.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin="crossorigin"
+  />
+  <link
+    rel="preload"
+    href="/fonts/space-grotesk-v13-latin-700.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin="crossorigin"
+  />
+  <style is:inline>
+    /* space-grotesk-regular - latin */
+    @font-face {
+      font-family: "Space Grotesk";
+      font-style: normal;
+      font-weight: 400;
+      src: local(""),
+        url("/fonts/space-grotesk-v13-latin-regular.woff2") format("woff2"),
+        /* Chrome 26+, Opera 23+, Firefox 39+ */
+          url("/fonts/space-grotesk-v13-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+    }
+    /* space-grotesk-700 - latin */
+    @font-face {
+      font-family: "Space Grotesk";
+      font-style: normal;
+      font-weight: 700;
+      src: local(""),
+        url("/fonts/space-grotesk-v13-latin-700.woff2") format("woff2"),
+        /* Chrome 26+, Opera 23+, Firefox 39+ */
+          url("/fonts/space-grotesk-v13-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+    }
+  </style>
+</Fragment>
