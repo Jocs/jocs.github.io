@@ -1,5 +1,5 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
-import { defineConfig } from "astro/config";
+import { defineConfig, passthroughImageService } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
 
@@ -30,6 +30,9 @@ if (isBuild) {
 export default defineConfig({
   server: { port: SERVER_PORT },
   site: BASE_URL,
+  image: {
+    service: passthroughImageService()
+  },
   integrations: [
     sitemap(),
     tailwind({

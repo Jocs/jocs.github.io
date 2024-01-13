@@ -111,7 +111,7 @@ export const config: Config = {
         return new Tag(this.render, { ...attributes }, children);
       },
     },
-    // if you want to customise default tags, this is where you'd do it
+    // if you want to customize default tags, this is where you'd do it
     // after adding the code here, add an Astro component for this node
     // in Renderer.astro component
     // paragraph: {

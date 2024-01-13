@@ -15,7 +15,7 @@ Univer 文档是 Univer 办公套件之一，旨在提供一流的文档编辑�
 
 ### 1.1 项目架构图
 
-![](./doc-typesetting-design/0.png)
+![](/blog/doc-typesetting-design/0.png)
 
 由上面架构图大致可以看出，Univer 文档整体符合 MVVM 的架构模型。自下而上分别是数据模型层、视图模型层、视图层。整个文档项目拆分成 3 层多个模块：
 
@@ -205,7 +205,7 @@ Service 服务，其实在上文中已经提到了视图模型层中两个重量
 
 哈，上面不止一句话了，下面我将从源码层面来详细解释 Univer 渲染引擎中的事件系统
 
-![](./doc-typesetting-design/1.png)
+![](/blog/doc-typesetting-design/1.png)
 
 第一步：在 Canvas 元素上绑定事件，并对事件对象进行包装
 
@@ -294,7 +294,7 @@ export enum RANGE_DIRECTION {
 
 在第一部分，我们了解了 Univer 文档分层架构，数据模型层、视图模型层、视图层，以及各层的数据结构和各个模块的功能职责。在这一部分，我们将以设置行内样式这一功能为例，探索用户交互、数据变更再到页面渲染的整个过程
 
-![](./doc-typesetting-design/2.png)
+![](/blog/doc-typesetting-design/2.png)
 
 ### 2.1 菜单和 Command 关联
 

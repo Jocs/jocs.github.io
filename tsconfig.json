@@ -3,6 +3,7 @@
   "display": "theme/bubblegum",
   "compilerOptions": {
     "types": ["astro/client"],
-    "baseUrl": "."
+    "baseUrl": ".",
+    "ignoreDeprecations": "5.0"
   }
 }

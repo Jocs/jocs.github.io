@@ -34,7 +34,7 @@ Univer 文档编辑器放弃了传统的通过 DOM contenteditable 属性来实�
 
 ### 2.1 整体架构图
 
-![](./doc-typesetting-design/0.png)
+![](/blog/doc-typesetting-design/0.png)
 
 自下而上来介绍视图层的架构：
 
@@ -86,13 +86,13 @@ DocSkeleton 类是文档排版中最核心的模块之一，它负责整个文�
 
 作为前端工程师，我们对 DOM 对象非常熟悉，DOM 对象是一个树形结构，root 是 HTML 元素，HTML 元素下有 HEAD、BODY 元素，BODY 元素下面又有其他一些子元素，A 标签，H1 标签等。如下图 DOM 树形结构：
 
-![](./doc-typesetting-design/1.png)
+![](/blog/doc-typesetting-design/1.png)
 
 上面的各种 DOM 元素构成一棵 DOM 树形结构，在结合 CSS 样式，通过布局计算，完成整个网页渲染
 
 在 Univer 文档中，也有一棵对应的树形结构，其设计符合文档排版的需求
 
-![](./doc-typesetting-design/2.png)
+![](/blog/doc-typesetting-design/2.png)
 
 在 Univer 渲染节点对象中，一篇文档（Doc）包含多个页面（Pages），一个页面包含多个节（Sections），一个节又包含了多个列（Columns），一个列包含多个行（Lines），一行包含多个 divides，一个 divide 又包含了多个 spans，这样就把一篇文档拆分成了不同的渲染元素，布局的过程就是确定不同元素的包含关系以及位置布局信息。
 
@@ -149,7 +149,7 @@ _为什么这样设计呢？_
 
 在上面一节，我们介绍了渲染节点及其功能和属性，在这一节，我们将介绍布局计算到页面渲染的过程，布局计算就是确定上面渲染节点在整个文档内的位置信息，然后交给渲染引擎进行渲染，整个渲染过程分为 Layout 和 Render：
 
-![](./doc-typesetting-design/3.png)
+![](/blog/doc-typesetting-design/3.png)
 
 **Layout 过程**：layout 过程主要就是计算 Skeleton 中各元素的位置信息，整个代码位于 `_createSkeleton` 方法中，首先通过 `getViewModel` 方法获取视图层模型数据，这就是我们用于生成 Skeleton 的数据。在 layout 过程中，最小的布局单元是 span，span 包含一个或多个字符（通常是一个）的布局相关的所有信息，如 content、文本样式、宽度、bBox（boundingBox）、span 类型、count（content.length）等信息，当我们知道 span 信息，以及一行的宽度，我们也就能够进行布局排版了，逐个把 span 放在当前 divide，当 divide 排满之后，就创建一个新的 divide，当 line 排满之后，就创建新的 column，以此类推直到创建新的的页面。在 layout 的过程中，我们会计算没有渲染节点的位置、大小。当然在逐字排版的时候，我们也会遵守一些约定的规则，比如标点符号不能出现在行首等，这些规则都定义在了 Unicode line break 算法中，在下面介绍 line break 算法的时候会详细讨论
 
